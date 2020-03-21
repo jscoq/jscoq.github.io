@@ -7,7 +7,7 @@
     <title>jsCoq – The Coq Theorem Prover Online IDE</title>
   </head>
 
-<body>
+<body class="jscoq-main">
   <div id="ide-wrapper" class="toggled" data-filename="scratchpad.v">
     <!-- Editor and panel are created here by CoqManager -->
   </div>
@@ -20,7 +20,7 @@
         prelude:   true,
         base_path: './node_modules/jscoq/',
         init_pkgs: ['init'],
-        all_pkgs:  ['init', 'coq-base', 'coq-collections', 'coq-arith', 'coq-reals', 'math-comp'],
+        all_pkgs:  ['init', 'coq-base', 'coq-collections', 'coq-arith', 'coq-reals', 'mathcomp'],
         file_dialog: true,
         implicit_libs: true,
         editor: { mode: { 'company-coq': true }, keyMap: 'default' }
