@@ -3,7 +3,12 @@
     "description": "Official jsCoq online demo and documentation",
     "version": "0.12.0",
     "dependencies": {
+        "@jscoq/elpi": "file:../jscoq-addons/_build/jscoq+64bit/jscoq-elpi-0.12.0-rc1.tgz",
+        "@jscoq/equations": "file:../jscoq-addons/_build/jscoq+64bit/jscoq-equations-0.12.0-rc1.tgz",
+        "@jscoq/extlib": "file:../jscoq-addons/_build/jscoq+64bit/jscoq-extlib-0.12.0-rc1.tgz",
         "@jscoq/mathcomp": "file:../jscoq-addons/_build/jscoq+64bit/jscoq-mathcomp-0.12.0-rc1.tgz",
+        "@jscoq/quickchick": "file:../jscoq-addons/_build/jscoq+64bit/jscoq-quickchick-0.12.0-rc1.tgz",
+        "@jscoq/simpleio": "file:../jscoq-addons/_build/jscoq+64bit/jscoq-simpleio-0.12.0-rc1.tgz",
         "jscoq": "file:../jscoq-v8.12/_build/dist/jscoq-0.12.0-rc1-npm.tar.gz"
     },
     "repository": {
