@@ -1,0 +1,14 @@
+{
+    "name": "jscoq-website",
+    "description": "Official jsCoq online demo and documentation",
+    "version": "0.12.0",
+    "dependencies": {
+        "@jscoq/mathcomp": "file:../jscoq-addons/_build/jscoq+64bit/jscoq-mathcomp-0.12.0-rc1.tgz",
+        "jscoq": "file:../jscoq-v8.12/_build/dist/jscoq-0.12.0-rc1-npm.tar.gz"
+    },
+    "repository": {
+        "type": "git",
+        "url": "jscoq/jscoq.github.io"
+    },
+    "license": "AGPL-3.0-or-later"
+}
