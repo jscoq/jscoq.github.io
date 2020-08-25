@@ -4,11 +4,13 @@ D=$1
 
 ok=1
 
-fn=$D/common
-if [ -d $fn ] ; then echo "✓ $fn";
-    rm -rf common
-    cp -R $fn .
-else echo "✗ $fn"; ok=0; fi
+for subdir in common coq-pkgs ; do
+    fn=$D/$subdir
+    if [ -d $fn ] ; then echo "✓ $fn";
+        rm -rf $subdir
+        cp -R $fn .
+    else echo "✗ $fn"; ok=0; fi
+done
 
 for vol in lf plf ; do
     fn=$D/$vol/full
