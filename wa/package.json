@@ -3,6 +3,7 @@
     "description": "Official jsCoq online demo and documentation",
     "version": "0.12.0",
     "dependencies": {
+        "@jscoq/mathcomp": "file:../../jscoq-addons/_build/wacoq/jscoq-mathcomp-0.12.0-rc4.tgz",
         "wacoq": "file:../../jscoq+wacoq/wacoq-0.12.0-alpha1.tgz"
     },
     "repository": {
