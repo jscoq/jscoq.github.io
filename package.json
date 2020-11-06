@@ -3,18 +3,21 @@
     "description": "Official jsCoq online demo and documentation",
     "version": "0.12.0",
     "dependencies": {
-        "@jscoq/elpi": "^0.12.0",
-        "@jscoq/equations": "^0.12.0",
-        "@jscoq/extlib": "^0.12.0",
-        "@jscoq/mathcomp": "^0.12.0",
-        "@jscoq/quickchick": "^0.12.0",
-        "@jscoq/simpleio": "^0.12.0",
+        "@jscoq/elpi": "^0.12.1-rc1",
+        "@jscoq/equations": "^0.12.1-rc1",
+        "@jscoq/extlib": "^0.12.1-rc1",
+        "@jscoq/mathcomp": "^0.12.1-rc1",
+        "@jscoq/quickchick": "^0.12.1-rc1",
+        "@jscoq/simpleio": "^0.12.1-rc1",
         "@jscoq/software-foundations": "^0.12.0",
-        "jscoq": "^0.12.0"
+        "jscoq": "^0.12.1-rc1"
     },
     "repository": {
         "type": "git",
         "url": "jscoq/jscoq.github.io"
     },
-    "license": "AGPL-3.0-or-later"
+    "license": "AGPL-3.0-or-later",
+    "devDependencies": {
+        "commander": "^6.2.0"
+    }
 }

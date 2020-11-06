@@ -1,6 +1,13 @@
 
 BASEDIR = ..
-JSCOQ_SRC = $(BASEDIR)/../jscoq
+JSCOQ_SRC = ../jscoq
+
+ADDON_PKGS = elpi equations extlib simpleio mathcomp quickchick software-foundations \
+	     hahn paco snu-sflib promising
+ 
+EXCLUDE = software-foundations
+
+NPM_PKGS = 
 
 .PHONY: from-docker serve
 
