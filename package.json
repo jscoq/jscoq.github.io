@@ -9,7 +9,7 @@
         "@jscoq/mathcomp": "^0.12.1-rc1",
         "@jscoq/quickchick": "^0.12.1-rc1",
         "@jscoq/simpleio": "^0.12.1-rc1",
-        "@jscoq/software-foundations": "^0.12.0",
+        "@jscoq/software-foundations": "file:../jscoq-addons/software-foundations/etc/docker/dist/jscoq-software-foundations-0.12.1-rc1.tgz",
         "jscoq": "^0.12.1-rc1"
     },
     "repository": {

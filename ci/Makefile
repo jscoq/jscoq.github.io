@@ -1,13 +1,7 @@
 
 BASEDIR = ..
 JSCOQ_SRC = ../jscoq
-
-ADDON_PKGS = elpi equations extlib simpleio mathcomp quickchick software-foundations \
-	     hahn paco snu-sflib promising
- 
-EXCLUDE = software-foundations
-
-NPM_PKGS = 
+JSCOQ_ADDONS_SRC = ../jscoq-addons
 
 .PHONY: from-docker serve
 
@@ -17,11 +11,12 @@ NPM_PKGS =
 #
 
 JSCOQ_DOCKER = $(JSCOQ_SRC)/etc/docker/dist
+JSCOQ_ADDONS_DOCKER = $(JSCOQ_ADDONS_SRC)/software-foundations/etc/docker/dist
 
 from-docker:
 	cd $(BASEDIR) && \
-	npm i $(JSCOQ_DOCKER)/jscoq-*-npm.tar.gz $(JSCOQ_DOCKER)/jscoq-[a-z]*.tgz
-
+	npm i $(JSCOQ_DOCKER)/jscoq-*-npm.tar.gz $(JSCOQ_DOCKER)/jscoq-[a-z]*.tgz \
+	      ${foreach a,$(JSCOQ_ADDONS_DOCKER),$(a)/jscoq-*.tgz}
 
 ##################
 # Dev server
