@@ -4,7 +4,8 @@ class TestSuite {
         this.coq = coq;
         this.dir = './tests';
         this.files = ['sanity.v', 'addons/mathcomp.v', 'addons/elpi.v',
-                      'addons/quickchick.v', 'addons/pnp.v'];
+                      'addons/quickchick.v', 'addons/software-foundations.v', 
+                      'addons/pnp.v'];
     }
 
     async toProject() {
