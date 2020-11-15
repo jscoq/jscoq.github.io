@@ -26,3 +26,10 @@ PORT = 8080
 
 serve:
 	npx http-server $(BASEDIR) -c10 -p $(PORT)
+
+
+########################
+# Actual deployment
+#
+publish-npm:
+	cd $(BASEDIR) && node ci/ship-it.js npm
