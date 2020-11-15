@@ -3,7 +3,7 @@ BASEDIR = ..
 JSCOQ_SRC = ../jscoq
 JSCOQ_ADDONS_SRC = ../jscoq-addons
 
-.PHONY: from-docker serve
+.PHONY: from-docker serve publish-npm publish-website
 
 
 #########################
@@ -32,4 +32,14 @@ serve:
 # Actual deployment
 #
 publish-npm:
-	cd $(BASEDIR) && node ci/ship-it.js npm
+	cd $(BASEDIR) && ci/ship-it.js npm
+
+publish-website:
+	# @todo check that current branch is not 'deploy'
+	git branch
+	cd $(BASEDIR) && ci/ship-it.js website
+	git branch -D deploy
+	git checkout -b deploy
+	git add -f node_modules && git commit -m "[deploy] Deploy website."
+	git push -u --force origin deploy
+	# @todo restore original branch
