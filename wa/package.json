@@ -1,10 +1,18 @@
 {
     "name": "jscoq-website-wa",
     "description": "Official jsCoq online demo and documentation",
-    "version": "0.12.0",
+    "version": "0.12.1",
     "dependencies": {
-        "@jscoq/mathcomp": "file:../../jscoq-addons/_build/wacoq/jscoq-mathcomp-0.12.0-rc4.tgz",
-        "wacoq": "file:../../jscoq+wacoq/wacoq-0.12.0-alpha1.tgz"
+        "@jscoq/elpi": "file:../../jscoq-addons/_build/wacoq/jscoq-elpi-0.12.1.tgz",
+        "@jscoq/equations": "file:../../jscoq-addons/_build/wacoq/jscoq-equations-0.12.1.tgz",
+        "@jscoq/extlib": "file:../../jscoq-addons/_build/wacoq/jscoq-extlib-0.12.1.tgz",
+        "@jscoq/mathcomp": "file:../../jscoq-addons/_build/wacoq/jscoq-mathcomp-0.12.1.tgz",
+        "@jscoq/quickchick": "file:../../jscoq-addons/_build/wacoq/jscoq-quickchick-0.12.1.tgz",
+        "@jscoq/simpleio": "file:../../jscoq-addons/_build/wacoq/jscoq-simpleio-0.12.1.tgz",
+        "bootstrap": "^4.5.3",
+        "jquery": "^3.5.1",
+        "wacoq": "file:../../jscoq+wacoq/wacoq-0.12.1-alpha1.tgz",
+        "wacoq-bin": "file:../../../workspace/Coq.WA/wacoq-bin-0.12.1-alpha1.tar.gz"
     },
     "repository": {
         "type": "git",
