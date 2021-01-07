@@ -54,7 +54,7 @@ body {
   right: 0;
   top: 40px;
   width: 40px !important;
-  background: url(../../../../node_modules/jscoq/ui-images/jscoq-splash.png);  
+  background: url(../../../../node_modules/wacoq/ui-images/jscoq-splash.png);  
   background-size: cover;
   cursor: pointer;
   /*transition: visibility 0s linear 1s, width 0.2s ease; */
@@ -106,6 +106,10 @@ body.terse .CodeMirror.jscoq {
   line-height: 34px;
 }
 
+body.terse #goal-panel div.contextual-info {
+  font-size: 100%; /* overrides jsCoq's style */
+}
+
 body.terse #query-panel .Error,
 body.terse #query-panel .Warning,
 body.terse #query-panel .Notice,
@@ -116,7 +120,7 @@ body.terse #query-panel .Debug {
   padding-left: 22px;
 }
 
-hr {
+#footer hr {
   border-top: 1px solid black;
   opacity: 0.2;
 }

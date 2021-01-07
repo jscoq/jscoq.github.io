@@ -12,7 +12,7 @@ body {
     display: block;
     padding: 0px;
     margin: 0px;
-    padding-bottom: 10px; }
+}
 
 #header { 
     min-height: 100px;
@@ -194,7 +194,9 @@ h4.section {
     color: black;
     /* text-align: justify; */
     border-style: plain;
-    padding-top: 18px;
+    /* This might work better after changing back to standard coqdoc: */
+    padding-top: 10px;
+    /* padding-top: 18px; */
 }
 
 .quote { 
@@ -793,11 +795,9 @@ body.sf_home table td p {
     
 }
 
-table.logical { 
-    background-color: rgba(144, 160, 209, 0.5);  }
-    
-    
+table.logical { background-color: rgba(144, 160, 209, 0.5);  }
 table.logical tbody tr td.tab { background-color: #91a1d1; }
+
 table.language_found { background-color: rgba(178, 88, 88, 0.5);  }
 table.language_found  tbody tr td.tab { background-color: #b25959; }
 
@@ -806,6 +806,9 @@ table.algo  tbody tr td.tab { background-color: #c2c26c; }
 
 table.qc {  background-color: rgba(185, 170, 185, 0.5); }
 table.qc tbody tr td.tab { background-color: #8b7d95; }
+
+table.vc {  background-color: rgba(159, 125, 140, 0.5); }
+table.vc tbody tr td.tab { background-color: rgb(159, 125, 140); }
 
 /* Suggested background color for next volume */
 #     #c07d62

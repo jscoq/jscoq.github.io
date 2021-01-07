@@ -3,7 +3,7 @@
  * This file implements simple slide functionality for the SF HTML
  * files. When loaded in a page, it will tag some of the page elements
  * as slide boundaries, giving each an id of the form
- * "#slide-XX". Pressing page up or page down should trigger "slide mode",
+ * "#slide-XX". Pressing left or right should trigger "slide mode",
  * focusing the screen on the current slide, and then navigate between
  * slides. Pressing escape brings the page back to normal. */
 
@@ -15,8 +15,8 @@ var slideMode = false;
 
 /* Keyboard navigation */
 var KEYS = {
-    next: 34,        // PageDown
-    prev: 33,        // PageUp
+    next: 39,        // Right arrow
+    prev: 37,        // Left arrow
     exit: 27         // Escape
 };
 
