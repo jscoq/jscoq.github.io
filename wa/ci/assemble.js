@@ -84,7 +84,7 @@ async function consumeFromDirectories(dirs) {
     
     if (toInstall.length > 0) {
         const npm = require('global-npm');
-        await npm.load(() => { });
+        await new Promise(resolve => npm.load(resolve));
         await new Promise(resolve => npm.commands.install(toInstall, resolve));
         console.log('🐿  ✔︎');
     }
