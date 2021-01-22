@@ -18,7 +18,7 @@
         "@wacoq/snu-sflib": "file:../../jscoq-addons/_build/wacoq/wacoq-snu-sflib-0.12.1-alpha3.tgz",
         "bootstrap": "^4.5.3",
         "jquery": "^3.5.1",
-        "wacoq": "file:../../jscoq+wacoq/wacoq-0.12.1-alpha3.tgz",
+        "wacoq": "file:../../wacoq/wacoq-0.12.1-alpha3.tgz",
         "wacoq-bin": "file:../../wacoq-bin/wacoq-bin-0.12.1-alpha3.tar.gz"
     },
     "repository": {
