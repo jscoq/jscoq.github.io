@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+#unit-tests th { color: #666; text-align: left; cursor: pointer; }
+#unit-tests tr.volume-header  th { color: #333; text-transform: uppercase; font-size: 133%; padding: .2em 0; }
+#unit-tests tr[phase=started] th { color: black; }
+#unit-tests tr[phase=loaded]  th { color: rgb(163, 163, 0); }
+#unit-tests tr[phase=running] th { color: orange; }
+#unit-tests tr[phase=success] th { color: green; } 
+#unit-tests tr[phase=fail]    th { color: red; } 
+iframe {
+    width: 1600px;
+    height: 1200px; 
+    transform: scale(0.5); transform-origin: 100% 0; 
+    position: fixed;
+    right: 20px;
+    top: 50px;
+    max-height: calc(200vh - 120px);
+}
+iframe.hidden {
+    display: none;
+}
+</style>
+</head>
+<body>
+    <div>
+        <button id="run-all">Run all</button>
+        <button id="stop">Stop</button>
+    </div>
+    <table id="unit-tests">
+    </table>
+<script>
+
+
+class TestRow {
+    constructor(name, url, container) {
+        var tr = document.createElement('tr'),
+            th = document.createElement('th'),
+            td = document.createElement('td');
+        tr.append(th); th.textContent = name;
+        tr.append(td);
+        td.classList.add('status');
+        container.append(tr);
+        this.tr = tr;
+        this.tdStatus = td;
+        this.url = url;
+        this.started = false;
+        this.start = this.restart = this.switchTo = () => {};
+
+        th.addEventListener('click', () => {
+            if (this.started) this.switchTo();
+            else { this.started = true; this.start() }
+        });
+        th.addEventListener('dblclick', ev => this.restart());
+        th.addEventListener('mousedown', ev => ev.detail > 1 && ev.preventDefault());
+    }
+
+    notify(phase) { this.tr.setAttribute('phase', phase); }
+    set status(text) { this.tdStatus.textContent = text; }
+}
+
+class PageUnderTest {
+    constructor(iframe) {
+        this.iframe = iframe;
+    }
+
+    waitForLoad() {
+        return new Promise((resolve) => 
+            this.iframe.addEventListener('load', resolve));
+    }
+
+    waitForCoq() {
+        return new Promise((resolve) => {
+            var w = setInterval(async () => {
+                var coq = this.iframe.contentWindow.coq;
+                if (coq) {
+                    clearInterval(w);
+                    await coq.when_ready.promise;
+                    resolve(coq);
+                }
+            });
+        });
+    }
+
+    hide() { this.iframe.classList.add('hidden'); }
+    show() { this.iframe.classList.remove('hidden'); }
+    kill() { this.iframe.remove(); }
+
+    static create(url) {
+        var ut = document.createElement('iframe');
+        document.body.append(ut);
+        ut.src = url;
+        return new PageUnderTest(ut);
+    }
+}
+
+class TestPage {
+    constructor(page, trow) {
+        this.page = page;
+        this.trow = trow;
+        this.outcome = new Future;
+    }
+
+    async run() {
+        this.trow.status = "Starting...";         this.trow.notify('started');
+        await this.page.waitForLoad();            this.trow.notify('loaded');
+        this.coq = await this.page.waitForCoq();  this.trow.notify('running');
+        this.start();
+    }
+
+    start() {
+        while (this.coq.goNext());
+
+        this._poll = setInterval(() => {
+            var s = this.stats();
+            this.trow.status = JSON.stringify(s);
+            if (s.processed && Object.keys(s).length == 1 && !this.coq.goNext())
+                this.done('success');
+            else if (s.error)
+                this.done('fail');
+            else {
+                this.trow.notify('running');
+                while (this.coq.goNext()); // Keep doing this in case some snippets where not ready yet before
+            }
+        }, 1000);
+    }
+
+    done(outcome) {
+        this.outcome.resolve(outcome);
+        this.trow.notify(outcome);
+        if (this._poll) clearInterval(this._poll);
+    }
+
+    stats() {
+        var cnt = {}, v;
+        for (let stm of this.coq.doc.sentences) {
+            if (v = stm.phase) cnt[v] ? cnt[v]++ : cnt[v] = 1;
+        }
+        return cnt;
+    }
+
+    kill() {
+        if (this._poll) clearInterval(this._poll);
+        this.page.kill();
+    }
+}
+
+class Future {
+    constructor() {
+        this.promise = new Promise((resolve, reject) => {
+            this.resolve = resolve;
+            this.reject = reject;
+        });
+    }
+}
+
+async function launch(trow) {
+    if (trow.task) trow.task.kill();
+    trow.task = new TestPage(PageUnderTest.create(trow.url), trow);
+    trow.task.run();
+}
+
+function header(vol) {
+    var tr = document.createElement('tr'),
+        th = document.createElement('th');
+    tr.append(th); tr.classList.add('volume-header');
+    th.textContent = vol;
+    return tr;
+}
+
+const LF = [
+    "Basics", "Induction", "Lists", "Poly", "Tactics", "Logic","IndProp",
+    "Maps", "ProofObjects", "IndPrinciples", "Rel", "Imp", "ImpParser",
+    "ImpCEvalFun", "Extraction", "Auto", "AltAuto"];
+const PLF = [
+        "Equiv", "Hoare", "Hoare2", "HoareAsLogic", "Smallstep", "Types",
+        "Stlc", "StlcProp", "MoreStlc", "Sub", "Typechecking", "Records",
+        "References", "RecordSub"];
+
+const container = document.querySelector('#unit-tests');
+
+var tests = [].concat(...[['lf', LF], ['plf', PLF]].map(([vol, chaps]) => {
+        container.append(header(vol));
+        return chaps.map(nm => new TestRow(`${vol}/${nm}`,
+            `../${vol}/full/${nm}.html?jscoq=on`, container));
+    })),
+    fore;
+function setFore(t) { fore && fore.task.page.hide(); fore = t; }
+
+for (let t of tests) {
+    t.start = t.restart = () => { setFore(t); launch(t); };
+    t.switchTo = () => { setFore(t); t.task.page.show(); };
+}
+
+async function runAll() {
+    runAll.stop = false;
+    for (let t of tests) {
+        t.start();
+        await t.task.outcome.promise;
+        if (runAll.stop) break;
+    }
+}
+
+document.querySelector('#run-all').addEventListener('click', runAll);
+document.querySelector('#stop').addEventListener('click', () => runAll.stop = true);
+
+</script>
+</body>

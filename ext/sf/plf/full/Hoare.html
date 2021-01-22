@@ -1810,7 +1810,10 @@ A couple of useful facts about <span class="inlinecode"><span class="id" title="
 &nbsp;&nbsp;<span class="id" title="definition">beval</span> <a class="idref" href="Hoare.html#st:113"><span class="id" title="variable">st</span></a> <a class="idref" href="Hoare.html#b:112"><span class="id" title="variable">b</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="notation">false</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">¬</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">(</span></a>(<a class="idref" href="Hoare.html#bassn"><span class="id" title="definition">bassn</span></a> <a class="idref" href="Hoare.html#b:112"><span class="id" title="variable">b</span></a>) <a class="idref" href="Hoare.html#st:113"><span class="id" title="variable">st</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">)</span></a>.<br/>
 <div class="togglescript" id="proofcontrol8" onclick="toggleDisplay('proof8');toggleDisplay('proofcontrol8')"><span class="show"></span></div>
 <div class="proofscript" id="proof8" onclick="toggleDisplay('proof8');toggleDisplay('proofcontrol8')">
-<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">congruence</span>. <span class="id" title="keyword">Qed</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">congruence</span>. <span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<br/>
 <span class="id" title="keyword">Hint Resolve</span> <span class="id" title="var">bexp_eval_false</span> : <span class="id" title="var">core</span>.<br/>
 </div>
 
@@ -1820,13 +1823,9 @@ We mentioned the <span class="inlinecode"><span class="id" title="tactic">congru
     automatically find that both <span class="inlinecode"><span class="id" title="var">beval</span></span> <span class="inlinecode"><span class="id" title="var">st</span></span> <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">false</span></span> and <span class="inlinecode"><span class="id" title="var">beval</span></span> <span class="inlinecode"><span class="id" title="var">st</span></span> <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">true</span></span>
     are being assumed, notice the contradiction, and <span class="inlinecode"><span class="id" title="tactic">discriminate</span></span> to complete
     the proof. 
-</div>
+<div class="paragraph"> </div>
 
-<br/>
-</div>
-
-<div class="doc">
-Now we can formalize the Hoare proof rule for conditionals
+ Now we can formalize the Hoare proof rule for conditionals
     and prove it correct. 
 </div>
 <div class="code">
@@ -1894,6 +1893,7 @@ That is (unwrapping the notations):
 &nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">apply</span> <a class="idref" href="Hoare.html#hoare_asgn"><span class="id" title="lemma">hoare_asgn</span></a>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="var">assn_auto</span>.<br/>
 <span class="id" title="keyword">Qed</span>.<br/>
+</div>
 </div>
 
 <div class="doc">
@@ -3183,7 +3183,7 @@ Here are the other proof rules (sanity check)
 <div class="code">
 
 <br/>
-<span class="comment">(*&nbsp;2021-01-04&nbsp;20:49&nbsp;*)</span><br/>
+<span class="comment">(*&nbsp;2021-01-21&nbsp;00:28&nbsp;*)</span><br/>
 </div>
 </div>
 
