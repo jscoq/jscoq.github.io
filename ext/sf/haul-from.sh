@@ -12,6 +12,13 @@ for subdir in common coq-pkgs ; do
     else echo "✗ $fn"; ok=0; fi
 done
 
+fn=$D/tools
+if [ -d $fn ] ; then echo "✓ $fn";
+    rm -rf tools
+    mkdir tools
+    cp $fn/jscoq-tester.html tools/
+else echo "✗ $fn"; ok=0; fi
+
 for vol in lf plf ; do
     fn=$D/$vol/full
     if [ -d $fn ] ; then echo "✓ $fn"; 
