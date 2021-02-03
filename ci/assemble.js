@@ -4,7 +4,6 @@
  * Installs jsCoq and addons from a given directory.
  */
 
-
 const fs = require('fs'),
       path = require('path'),
       glob = require('glob'),
@@ -13,60 +12,138 @@ const fs = require('fs'),
       gunzip = require('gunzip-maybe'),
       concat = require('concat-stream');
 
-const DEFAULT_CONTEXT = 'jscoq+64bit';
 
-const opts = require('commander')
-    //.option('-l, --link', 'create symbolic links instead of copying')
-    .option('-c,--build-context <switch>', 'Dune context in which to look for build artifacts',
-            DEFAULT_CONTEXT)
-    .parse();
+function assemble(opts) {
 
-const pkgDir = './node_modules',
-      pkgMaster = 'jscoq',
-      pkgPrefix = '@jscoq/',
-      distRel = '_build/dist',
-      buildRel = `_build/${opts.buildContext}`;
+    const o = require('commander')
+        //.option('-l, --link', 'create symbolic links instead of copying')
+        .option('--npm [version]', 'Install from npm (using `version` if given, otherwise \"latest\")')
+        .option('-c,--build-context <switch>', 'Dune context in which to look for build artifacts',
+                opts.DEFAULT_CONTEXT)
+        .parse();
 
-async function collectFromDirectory(dir) {
+    if (o.npm === true) o.npm = "latest";
 
-    function getManifest(filename) {
-      
-        function peek(cb) {
-            var e = tar.extract();
-            e.on('entry', (header, stream, next) => {
-                stream.on('end', function() { next() });
+    var ir = new Integration(opts);
 
-                if (path.basename(header.name) == 'package.json') {
-                    stream.pipe(concat(d => { try { cb(JSON.parse(d)); } catch { } } ));
-                }
-                else stream.resume() // just drain the stream so that we can continue
-            });
-            e.on('finish', () => cb());
-            return e;
-        }
-
-        return new Promise(resolve =>
-            fs.createReadStream(filename).pipe(gunzip()).pipe(peek(resolve)));
+    if (o.npm) {
+        if (o.npm == 'ls')
+            ir.listDeployables();
+        else
+            ir.fromNPM(o.npm);
+        return;
     }
 
-    for (let subdir of [distRel, buildRel])
-        dir = cd_maybe(dir, subdir);
+    const {pkgDir, pkgMaster, pkgPrefix, distRel} = opts,
+          buildRel = `_build/${o.buildContext}`;
 
-    var toInstall = [];
+    async function collectFromDirectory(dir) {
 
-    for (let fn of glob.sync('**/*.@(tgz|tar.gz)', {cwd: dir})) {
-        var fp = path.join(dir, fn),
-            manifest = await getManifest(fp);
+        function getManifest(filename) {
+          
+            function peek(cb) {
+                var e = tar.extract();
+                e.on('entry', (header, stream, next) => {
+                    stream.on('end', function() { next() });
 
-        if (manifest && manifest.name && (manifest.name == pkgMaster ||
-                                          manifest.name.startsWith(pkgPrefix))) {
-            console.log(`${manifest.name}@${manifest.version}  <--  ${fn}`);
-            toInstall.push(fp);
+                    if (path.basename(header.name) == 'package.json') {
+                        stream.pipe(concat(d => { try { cb(JSON.parse(d)); } catch { } } ));
+                    }
+                    else stream.resume() // just drain the stream so that we can continue
+                });
+                e.on('finish', () => cb());
+                return e;
+            }
+
+            return new Promise(resolve =>
+                fs.createReadStream(filename).pipe(gunzip()).pipe(peek(resolve)));
         }
+
+        for (let subdir of [distRel, buildRel])
+            dir = cd_maybe(dir, subdir);
+
+        var toInstall = [];
+
+        for (let fn of glob.sync('**/*.@(tgz|tar.gz)', {cwd: dir})) {
+            var fp = path.join(dir, fn),
+                manifest = await getManifest(fp);
+
+            if (manifest && manifest.name && (manifest.name == pkgMaster ||
+                                              manifest.name.startsWith(pkgPrefix))) {
+                console.log(`${manifest.name}@${manifest.version}  <--  ${fn}`);
+                toInstall.push(fp);
+            }
+        }
+
+        return toInstall;
     }
 
-    return toInstall;
+    async function consumeFromDirectories(dirs) {
+        var toInstall = [];
+        for (let dir of dirs)
+            toInstall.push(...await collectFromDirectory(dir));
+        
+        if (toInstall.length > 0) {
+            const npm = require('global-npm');
+            await npm.load(() => { });
+            await new Promise(resolve => npm.commands.install(toInstall, resolve));
+            console.log('🐿  ✔︎');
+        }
+        else console.log('✘ no packages found.');
+    }
+
+    consumeFromDirectories(o.args);
 }
+
+
+class Integration {
+    constructor(opts) { this.opts = opts; }
+
+    getPackages() {
+        var m = JSON.parse(fs.readFileSync('package.json'));
+        
+        var p = {}, k = this.opts.pkgMaster;
+        if (m.dependencies[k]) p[k] = m.dependencies[k];
+
+        for (let k in m.dependencies) {
+            if (k.startsWith('@jscoq/'))
+                p[k] = m.dependencies[k];
+        }
+
+        return p;
+    }
+
+    getDeployables() {
+        var p = this.getPackages(), files = [];
+
+        for (let v of Object.values(p)) {
+            var mo = /^file:(.*)$/.exec(v);
+            if (mo) files.push(mo[1]);
+        }
+
+        return files;
+    }
+    
+
+    listDeployables() {
+        var files = this.getDeployables();
+
+        for (let fn of files) console.log(fn);
+    }
+
+    async fromNPM(ver = 'latest') {
+        var toInstall = Object.keys(this.getPackages()).map(nm => `${nm}@${ver}`);
+
+        if (toInstall.length > 0) {
+            const npm = require('global-npm');
+            await npm.load(() => { });
+            await new Promise(resolve => npm.commands.install(toInstall, resolve));
+            console.log('🐿  ✔︎');
+        }
+        else console.log('✘ no packages found.');
+    }
+}
+
 
 function cd_maybe(dir, rel) {
     var d = path.join(dir, rel);
@@ -77,16 +154,13 @@ function cd_maybe(dir, rel) {
     return dir;
 }
 
-async function consumeFromDirectories(dirs) {
-    var toInstall = [];
-    for (let dir of dirs)
-        toInstall.push(...await collectFromDirectory(dir));
+
+if (module.id === '.') {
     
-    const npm = require('global-npm');
-    await npm.load(() => { });
-    await new Promise(resolve => npm.commands.install(toInstall, resolve));
-    console.log('🐿  ✔︎');
+    assemble({DEFAULT_CONTEXT: 'jscoq+64bit',
+              pkgDir: './node_modules',
+              pkgMaster: 'jscoq',
+              pkgPrefix: '@jscoq/',
+              distRel: '_build/dist'});
+
 }
-
-
-consumeFromDirectories(opts.args);
