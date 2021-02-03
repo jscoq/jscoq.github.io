@@ -3,21 +3,21 @@
     "description": "Official jsCoq online demo and documentation",
     "version": "0.12.1",
     "dependencies": {
-        "@jscoq/elpi": "^0.12.1",
-        "@jscoq/equations": "^0.12.1",
-        "@jscoq/extlib": "^0.12.1",
-        "@jscoq/fcsl-pcm": "^0.12.1",
-        "@jscoq/hahn": "^0.12.1",
-        "@jscoq/htt": "^0.12.1",
-        "@jscoq/mathcomp": "^0.12.1",
-        "@jscoq/paco": "^0.12.1",
-        "@jscoq/pnp": "^0.12.1",
-        "@jscoq/promising": "^0.12.1",
-        "@jscoq/quickchick": "^0.12.1",
-        "@jscoq/simpleio": "^0.12.1",
-        "@jscoq/snu-sflib": "^0.12.1",
-        "@jscoq/software-foundations": "^0.12.1",
-        "jscoq": "^0.12.1"
+        "@jscoq/elpi": "^0.12.2-rc1",
+        "@jscoq/equations": "^0.12.2-rc1",
+        "@jscoq/extlib": "^0.12.2-rc1",
+        "@jscoq/fcsl-pcm": "^0.12.2-rc1",
+        "@jscoq/hahn": "^0.12.2-rc1",
+        "@jscoq/htt": "^0.12.2-rc1",
+        "@jscoq/mathcomp": "^0.12.2-rc1",
+        "@jscoq/paco": "^0.12.2-rc1",
+        "@jscoq/pnp": "^0.12.2-rc1",
+        "@jscoq/promising": "^0.12.2-rc1",
+        "@jscoq/quickchick": "^0.12.2-rc1",
+        "@jscoq/simpleio": "^0.12.2-rc1",
+        "@jscoq/snu-sflib": "^0.12.2-rc1",
+        "@jscoq/software-foundations": "^0.12.2-rc1",
+        "jscoq": "^0.12.2-rc1"
     },
     "repository": {
         "type": "git",
@@ -25,6 +25,7 @@
     },
     "license": "AGPL-3.0-or-later",
     "devDependencies": {
-        "commander": "^6.2.0"
+        "commander": "^6.2.0",
+        "global-npm": "^0.4.1"
     }
 }
