@@ -10,7 +10,8 @@ const fs = require('fs'),
       mkdirp = require('mkdirp'),
       tar = require('tar-stream'),
       gunzip = require('gunzip-maybe'),
-      concat = require('concat-stream');
+      concat = require('concat-stream'),
+      fetch = require('node-fetch');
 
 
 function assemble(opts) {
@@ -78,10 +79,29 @@ function assemble(opts) {
         return toInstall;
     }
 
-    async function consumeFromDirectories(dirs) {
+    async function collectFromHttp(url) {
+        var base = new URL(url),
+            index = await (await fetch(base)).text(), toInstall = [];
+        for (let mo of index.matchAll(/"([^"]*\.(tgz|tar.gz))"/g))
+            toInstall.push(new URL(mo[1], url).href);
+        /* hack to filter out the non-npm jsCoq tarball */
+        toInstall = toInstall.filter(u => {
+            var qual = u.replace('.t', '-npm.t');
+            return qual == u || !toInstall.includes(qual);
+        });
+        for (let u of toInstall) console.log(` <--  ${u}`);
+        return toInstall;
+    }
+
+    function collectFrom(dir_or_url) {
+        return dir_or_url.match(/^https?:/) ? collectFromHttp(dir_or_url)
+            : collectFromDirectory(dir_or_url);
+    }
+
+    async function consumeFromDirectories(locations) {
         var toInstall = [];
-        for (let dir of dirs)
-            toInstall.push(...await collectFromDirectory(dir));
+        for (let loc of locations)
+            toInstall.push(...await collectFrom(loc));
         
         if (toInstall.length > 0) {
             const npm = require('global-npm');
@@ -117,8 +137,8 @@ class Integration {
         var p = this.getPackages(), files = [];
 
         for (let v of Object.values(p)) {
-            var mo = /^file:(.*)$/.exec(v);
-            if (mo) files.push(mo[1]);
+            var mo = /^(file|https?):(.*)$/.exec(v);
+            if (mo) files.push(mo[1][0] == 'h' ? mo[0] : mo[2]);
         }
 
         return files;
