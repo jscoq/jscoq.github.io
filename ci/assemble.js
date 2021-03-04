@@ -47,7 +47,7 @@ function assemble(opts) {
                 e.on('entry', (header, stream, next) => {
                     stream.on('end', function() { next() });
 
-                    if (path.basename(header.name) == 'package.json') {
+                    if (header.name == 'package/package.json') {
                         stream.pipe(concat(d => { try { cb(JSON.parse(d)); } catch { } } ));
                     }
                     else stream.resume() // just drain the stream so that we can continue
@@ -105,7 +105,7 @@ function assemble(opts) {
         
         if (toInstall.length > 0) {
             const npm = require('global-npm');
-            await npm.load(() => { });
+            await new Promise(resolve => npm.load(resolve));
             await new Promise(resolve => npm.commands.install(toInstall, resolve));
             console.log('🐿  ✔︎');
         }
