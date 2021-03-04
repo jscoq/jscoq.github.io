@@ -45,9 +45,9 @@ function assemble(opts) {
             function peek(cb) {
                 var e = tar.extract();
                 e.on('entry', (header, stream, next) => {
-                    stream.on('end', function() { next() });
+                    stream.on('end', () => next());
 
-                    if (path.basename(header.name) == 'package.json') {
+                    if (header.name == 'package/package.json') {
                         stream.pipe(concat(d => { try { cb(JSON.parse(d)); } catch { } } ));
                     }
                     else stream.resume() // just drain the stream so that we can continue
