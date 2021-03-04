@@ -17,8 +17,7 @@
         "@jscoq/simpleio": "^0.12.2-rc1",
         "@jscoq/snu-sflib": "^0.12.2-rc1",
         "@jscoq/software-foundations": "^0.12.2-rc1",
-        "jscoq": "^0.12.2-rc1",
-        "node-fetch": "^2.6.1"
+        "jscoq": "^0.12.2-rc1"
     },
     "repository": {
         "type": "git",
