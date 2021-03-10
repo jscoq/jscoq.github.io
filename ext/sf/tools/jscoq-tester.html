@@ -52,7 +52,7 @@ class TestRow {
 
         th.addEventListener('click', () => {
             if (this.started) this.switchTo();
-            else { this.started = true; this.start() }
+            else { this.start() }
         });
         th.addEventListener('dblclick', ev => this.restart());
         th.addEventListener('mousedown', ev => ev.detail > 1 && ev.preventDefault());
@@ -157,10 +157,11 @@ class Future {
     }
 }
 
-async function launch(trow) {
+async function launch(trow, fore=true) {
     if (trow.task) trow.task.kill();
     trow.task = new TestPage(PageUnderTest.create(trow.url), trow);
     trow.task.run();
+    if (fore) setFore(trow); else trow.task.page.hide();
 }
 
 function header(vol) {
@@ -178,7 +179,8 @@ const LF = [
 const PLF = [
         "Equiv", "Hoare", "Hoare2", "HoareAsLogic", "Smallstep", "Types",
         "Stlc", "StlcProp", "MoreStlc", "Sub", "Typechecking", "Records",
-        "References", "RecordSub"];
+        "References", "RecordSub", "Norm", "LibTactics", "UseTactics",
+        "UseAuto", "PE"];
 
 const container = document.querySelector('#unit-tests');
 
@@ -188,18 +190,20 @@ var tests = [].concat(...[['lf', LF], ['plf', PLF]].map(([vol, chaps]) => {
             `../${vol}/full/${nm}.html?jscoq=on`, container));
     })),
     fore;
-function setFore(t) { fore && fore.task.page.hide(); fore = t; }
+function setFore(t) { if (fore && fore != t) fore.task.page.hide(); fore = t; }
 
 for (let t of tests) {
-    t.start = t.restart = () => { setFore(t); launch(t); };
+    t.start = t.restart = (fore=true) => { t.started = true; launch(t, fore); };
     t.switchTo = () => { setFore(t); t.task.page.show(); };
 }
 
 async function runAll() {
+    var focus = true;
     runAll.stop = false;
     for (let t of tests) {
-        t.start();
+        t.start(focus);
         await t.task.outcome.promise;
+        focus = (fore == t);
         if (runAll.stop) break;
     }
 }

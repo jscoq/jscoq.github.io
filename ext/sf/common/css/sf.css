@@ -494,6 +494,10 @@ tr.infrulemiddle hr {
     white-space: nowrap;
 }
 
+.HIDEFROMHTML {
+    display: none;
+}
+
 /* TOC */
 
 #toc h2 {
