@@ -184,3 +184,4 @@ if (module.id === '.') {
               distRel: '_build/dist'});
 
 }
+else module.exports = {assemble};
