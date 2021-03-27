@@ -37,7 +37,16 @@
             "LF.Maps"
           ]
         },
-        "LF.ImpCEvalFun":{"deps":["Coq.micromega.Lia","Coq.Arith.Arith","LF.Imp","LF.Maps"]},
+        "LF.ImpCEvalFun":{
+          "deps":[
+            "Coq.micromega.Lia",
+            "Coq.Arith.Arith",
+            "Coq.Arith.PeanoNat",
+            "Coq.Arith.EqNat",
+            "LF.Imp",
+            "LF.Maps"
+          ]
+        },
         "LF.ImpParser":{
           "deps":[
             "Coq.Strings.String",
@@ -131,9 +140,8 @@
         "PLF.LibTactics":{
           "deps":[
             "Coq.Lists.List",
-            "Coq.PArith.BinPos",
-            "Coq.ZArith.BinInt",
             "Coq.Numbers.BinNums",
+            "Coq.ZArith.BinInt",
             "Coq.Logic.ProofIrrelevance",
             "Coq.Program.Equality",
             "Coq.Arith.Compare_dec",
@@ -174,7 +182,9 @@
         "PLF.References":{
           "deps":[
             "Coq.Strings.String",
+            "Coq.Init.Nat",
             "Coq.Arith.Arith",
+            "Coq.Arith.PeanoNat",
             "Coq.micromega.Lia",
             "PLF.Maps",
             "PLF.Smallstep",
