@@ -21,7 +21,7 @@
         "node-fetch": "^2.6.1"
     },
     "scripts": {
-        "vercel-build": "npm i && mkdir public && mv *.html ui-* ci node_modules public/"
+        "vercel-build": "npm i && cp -r hot-patch/* node_modules/jscoq && mkdir public && mv *.html ui-* ci node_modules public/"
     },
     "repository": {
         "type": "git",
