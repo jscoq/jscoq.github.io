@@ -11,7 +11,8 @@ const fs = require('fs'),
       tar = require('tar-stream'),
       gunzip = require('gunzip-maybe'),
       concat = require('concat-stream'),
-      fetch = require('node-fetch');
+      fetch = require('node-fetch'),
+      Progress = require('node-fetch-progress');
 
 
 function assemble(opts) {
@@ -21,11 +22,13 @@ function assemble(opts) {
         .option('--npm [version]', 'Install from npm (using `version` if given, otherwise \"latest\")')
         .option('-c,--build-context <switch>', 'Dune context in which to look for build artifacts',
                 opts.DEFAULT_CONTEXT)
+        .option('-d,--copy-dist', 'Copy files to dist directory before install')
         .parse();
 
     if (o.npm === true) o.npm = "latest";
 
-    var ir = new Integration(opts);
+    var ir = new Integration(opts),
+        dist = new DistDir();
 
     if (o.npm) {
         if (o.npm == 'ls')
@@ -72,7 +75,8 @@ function assemble(opts) {
             if (manifest && manifest.name && (manifest.name == pkgMaster ||
                                               manifest.name.startsWith(pkgPrefix))) {
                 console.log(`${manifest.name}@${manifest.version}  <--  ${fn}`);
-                toInstall.push(fp);
+                if (o.copyDist) fp = await dist.copy(fp);
+                toInstall.push(ir.fileLocation(fp));
             }
         }
 
@@ -81,15 +85,20 @@ function assemble(opts) {
 
     async function collectFromHttp(url) {
         var base = new URL(url),
-            index = await (await fetch(base)).text(), toInstall = [];
-        for (let mo of index.matchAll(/"([^"]*\.(tgz|tar.gz))"/g))
-            toInstall.push(new URL(mo[1], url).href);
+            index = await (await fetch(base)).text(),
+            tarballs = [...index.matchAll(/"([^"]*\.(tgz|tar.gz))"/g)]
+                .map(mo => new URL(mo[1], url).href);
         /* hack to filter out the non-npm jsCoq tarball */
-        toInstall = toInstall.filter(u => {
+        tarballs = tarballs.filter(u => {
             var qual = u.replace('.t', '-npm.t');
-            return qual == u || !toInstall.includes(qual);
+            return qual == u || !tarballs.includes(qual);
         });
-        for (let u of toInstall) console.log(` <--  ${u}`);
+        var toInstall = [];
+        for (let u of tarballs) {
+            console.log(` <--  ${u}`);
+            if (o.copyDist) u = ir.fileLocation(await dist.download(u));
+            toInstall.push(u);
+        }
         return toInstall;
     }
 
@@ -98,6 +107,8 @@ function assemble(opts) {
             : collectFromDirectory(dir_or_url);
     }
 
+        
+    /* main entry point */
     async function consumeFromDirectories(locations) {
         var toInstall = [];
         for (let loc of locations)
@@ -107,7 +118,7 @@ function assemble(opts) {
             const npm = require('global-npm');
             await new Promise(resolve => npm.load(resolve));
             await new Promise(resolve => npm.commands.install(toInstall, resolve));
-            console.log('🐿  ✔︎');
+            console.log('\n🐿  ✔︎');
         }
         else console.log('✘ no packages found.');
     }
@@ -144,11 +155,14 @@ class Integration {
         return files;
     }
     
-
     listDeployables() {
         var files = this.getDeployables();
 
         for (let fn of files) console.log(fn);
+    }
+
+    fileLocation(fp) {
+        return fp.startsWith('/') ? fp : `./${fp}`;  /* for `npm install */
     }
 
     async fromNPM(ver = 'latest') {
@@ -163,6 +177,38 @@ class Integration {
         else console.log('✘ no packages found.');
     }
 }
+
+
+class DistDir {
+    constructor(dir='dist') {
+        this.dir = dir;
+    }
+
+    download(url, dir=this.dir) {
+        mkdirp.sync(dir);
+        var fn = path.join(dir, url.replace(/.*[/]/, ''));
+        return new Promise(async resolve =>
+            withProgress(await fetch(url)).body.pipe(fs.createWriteStream(fn))
+            .on('close', () => resolve(fn)));
+    }
+
+    copy(fp, dir=this.dir) {
+        mkdirp.sync(dir);
+        var fn = path.join(dir, path.basename(fp));
+        return new Promise(resolve => fs.copyFile(fp, fn, () => resolve(fn)));
+    }
+}
+
+/* helper function for downloading dist files over HTTP */
+function withProgress(response) {
+    const blnk = ' '.repeat(40),
+          poke = (s) => process.stderr.write(`\r${blnk}\r${s}`);
+    new Progress(response, { throttle: 100 })
+        .on('progress', (p) => poke(`  ${p.doneh}/${p.totalh}`))
+        .on('finish', () => poke(''));
+    return response;
+}
+
 
 
 function cd_maybe(dir, rel) {
