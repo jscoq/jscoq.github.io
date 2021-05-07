@@ -2,6 +2,7 @@
     "name": "jscoq-website-ci",
     "version": "0.1.0",
     "description": "Just some scripts to help build and deploy the website.",
+    "type": "module",
     "dependencies": {
         "commander": "^6.2.1",
         "concat-stream": "^2.0.0",
