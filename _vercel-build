@@ -1,0 +1,6 @@
+npm i
+mkdir public
+mv *.html ui-* ci node_modules public/
+
+# Build in `wa/` if available
+if [ -e wa ]; then cd wa ; npm run vercel-build ; fi

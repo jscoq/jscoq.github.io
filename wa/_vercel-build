@@ -1,0 +1,11 @@
+npm i
+mkdir ../public/wa
+
+# Vercel does not like symlinks :/
+( cd node_modules/wacoq-bin/bin && readlink ocaml )
+rm node_modules/wacoq-bin/bin/{ocaml,num,zarith}
+cp -R node_modules/ocaml-wasm/bin node_modules/wacoq-bin/bin/ocaml
+cp -R node_modules/@ocaml-wasm/4.10--num/bin node_modules/wacoq-bin/bin/num
+cp -R node_modules/@ocaml-wasm/4.10--zarith/bin node_modules/wacoq-bin/bin/zarith
+
+mv *.html ui-* ci node_modules ../public/wa

@@ -21,7 +21,7 @@
         "node-fetch": "^2.6.1"
     },
     "scripts": {
-        "vercel-build": "npm i && mkdir public && mv *.html ui-* ci node_modules public/"
+        "vercel-build": "npm i && mkdir public && mv *.html ui-* ci node_modules public/ && ( cd wa && npm run vercel-build )"
     },
     "repository": {
         "type": "git",
