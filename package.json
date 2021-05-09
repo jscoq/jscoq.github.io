@@ -17,8 +17,7 @@
         "@jscoq/simpleio": "file:dist/jscoq-simpleio-0.13.0-rc1.tgz",
         "@jscoq/snu-sflib": "file:dist/jscoq-snu-sflib-0.13.0-rc1.tgz",
         "@jscoq/software-foundations": "file:dist/jscoq-software-foundations-0.13.0-rc1.tgz",
-        "jscoq": "file:dist/jscoq-0.13.0-rc1-npm.tar.gz",
-        "node-fetch": "^2.6.1"
+        "jscoq": "file:dist/jscoq-0.13.0-rc1-npm.tar.gz"
     },
     "scripts": {
         "vercel-build": "npm i && mkdir public && mv *.html ui-* ci node_modules public/ && ( cd wa && npm run vercel-build )"
@@ -27,10 +26,5 @@
         "type": "git",
         "url": "jscoq/jscoq.github.io"
     },
-    "license": "AGPL-3.0-or-later",
-    "devDependencies": {
-        "commander": "^6.2.0",
-        "global-npm": "^0.4.1",
-        "node-fetch-progress": "^1.0.2"
-    }
+    "license": "AGPL-3.0-or-later"
 }
