@@ -38,10 +38,6 @@ function assemble(opts) {
         return;
     }
 
-    if (o.copyDist) {
-        return dist.consolidate(ir.getDeployables());
-    }
-
     const {pkgDir, pkgMaster, pkgPrefix, distRel} = opts,
           buildRel = `_build/${o.buildContext}`;
 
@@ -60,8 +56,6 @@ function assemble(opts) {
             if (manifest && manifest.name && (manifest.name == pkgMaster ||
                                               manifest.name.startsWith(pkgPrefix))) {
                 console.log(`${manifest.name}@${manifest.version}  <--  ${fn}`);
-                if (o.copyDist) fp = await dist.copy(fp);
-                console.log(fp);
                 toInstall.push(ir.fileLocation(fp));
             }
         }
@@ -98,7 +92,7 @@ function assemble(opts) {
     }
         
     /* main entry point */
-    async function consumeFromDirectories(locations) {
+    async function consumeFromDirectories(locations, opts) {
         var toInstall = [];
         for (let loc of locations)
             toInstall.push(...await collectFrom(loc));
@@ -107,12 +101,21 @@ function assemble(opts) {
             const npm = (await import('global-npm')).default;
             await new Promise(resolve => npm.load(resolve));
             await new Promise(resolve => npm.commands.install(toInstall, resolve));
-            console.log('\n🐿  ✔︎');
         }
-        else console.log('✘ no packages found.');
+
+        if (opts.copyDist) {
+            console.log('\n🍒 consolidating...');
+            if (await dist.consolidate(ir.getDeployables()))
+                return consumeFromDirectories([dist.dir], {});
+        }
+
+        if (toInstall.length > 0)
+            console.log('\n🐿  ✔︎');
+        else
+            console.log('✘ no packages found.');
     }
 
-    consumeFromDirectories(o.args);
+    consumeFromDirectories(o.args, o);
 }
 
 
@@ -207,9 +210,14 @@ class DistDir {
     }
 
     async consolidate(pkgFilenames) {
+        var changed = false;
         for (let fp of pkgFilenames) {
-            console.log(await this.copyAndRedirect(fp));
+            if (!this.includes(fp)) {
+                console.log(await this.copyAndRedirect(fp));
+                changed = true;
+            }
         }
+        return changed;
     }
 
     redirectDeps(deps) {

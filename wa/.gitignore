@@ -1,1 +1,4 @@
 /dist
+
+# Vercel has an older NPM and chokes on it :(
+/package-lock.json
