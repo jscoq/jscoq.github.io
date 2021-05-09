@@ -50,9 +50,10 @@ function assemble(opts) {
         for (let subdir of [distRel, buildRel])
             dir = cd_maybe(dir, subdir);
 
-        var toInstall = [];
+        var tarballs = _pickAndChoose(glob.sync('**/*.@(tgz|tar.gz)', {cwd: dir})),
+            toInstall = [];
 
-        for (let fn of glob.sync('**/*.@(tgz|tar.gz)', {cwd: dir})) {
+        for (let fn of tarballs) {
             var fp = path.join(dir, fn),
                 manifest = await new PackageTarball(fp).getManifest();
 
@@ -73,11 +74,7 @@ function assemble(opts) {
             index = await (await fetch(base)).text(),
             tarballs = [...index.matchAll(/"([^"]*\.(tgz|tar.gz))"/g)]
                 .map(mo => new URL(mo[1], url).href);
-        /* hack to filter out the non-npm jsCoq tarball */
-        tarballs = tarballs.filter(u => {
-            var qual = u.replace('.t', '-npm.t');
-            return qual == u || !tarballs.includes(qual);
-        });
+        tarballs = _pickAndChoose(tarballs);
         var toInstall = [];
         for (let u of tarballs) {
             console.log(` <--  ${u}`);
@@ -92,6 +89,13 @@ function assemble(opts) {
             : collectFromDirectory(dir_or_url);
     }
 
+    /** hack to filter out the non-npm jsCoq tarball */
+    function _pickAndChoose(tarballs) {
+        return tarballs.filter(u => {
+            var qual = u.replace('.t', '-npm.t');
+            return qual == u || !tarballs.includes(qual);
+        });
+    }
         
     /* main entry point */
     async function consumeFromDirectories(locations) {
