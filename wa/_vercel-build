@@ -1,3 +1,6 @@
+# Vercel's NPM is too old T.T
+npm config set package-lock false
+
 npm i
 mkdir ../public/wa
 

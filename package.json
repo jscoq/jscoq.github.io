@@ -20,7 +20,7 @@
         "jscoq": "file:dist/jscoq-0.13.0-rc1-npm.tar.gz"
     },
     "scripts": {
-        "vercel-build": "npm i && mkdir public && mv *.html ui-* ci node_modules public/ && ( cd wa && npm run vercel-build )"
+        "vercel-build": "./_vercel-build"
     },
     "repository": {
         "type": "git",
