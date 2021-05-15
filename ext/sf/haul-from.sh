@@ -30,3 +30,8 @@ for vol in lf plf ; do
 done
 
 if [ $ok != 1 ] ; then echo 'error: some directories are missing'; exit 1; fi
+
+# touchup paths
+sed -i 's/(.*\/\(node_modules\/.*jscoq-splash.png\))/(\/wa\/\1)/' common/css/jscoq.css
+sed -i 's/".*\/\(node_modules\/.*jscoq-loader.js\)"/"\/wa\/\1"/' */full/*.html
+
