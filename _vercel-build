@@ -1,5 +1,5 @@
 # Vercel's NPM is too old T.T
-npm config set package-lock false
+rm -f package-lock.json
 
 npm i
 mkdir public
