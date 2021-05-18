@@ -1,14 +1,23 @@
+#!/bin/bash -e
+
 # Vercel's NPM is too old T.T
 rm -f package-lock.json
 
 npm i
+
+# Vercel does not like (some) symlinks :/
+varnishLinks() {
+    for fn in * ; do
+        tgt=$(readlink $fn || true)
+        if [ x"$tgt" != x ] ; then
+            echo "$fn --> $tgt"
+            rm $fn
+            cp -R $tgt ./$fn
+        fi
+    done
+}
+
+( cd node_modules/wacoq-bin/bin && varnishLinks )
+
 mkdir ../public/wa
-
-# Vercel does not like symlinks :/
-( cd node_modules/wacoq-bin/bin && readlink ocaml )
-rm node_modules/wacoq-bin/bin/{ocaml,num,zarith}
-cp -R node_modules/ocaml-wasm/bin node_modules/wacoq-bin/bin/ocaml
-cp -R node_modules/@ocaml-wasm/4.10--num/bin node_modules/wacoq-bin/bin/num
-cp -R node_modules/@ocaml-wasm/4.10--zarith/bin node_modules/wacoq-bin/bin/zarith
-
 mv *.html ui-* ci node_modules ../public/wa

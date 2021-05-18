@@ -1,3 +1,5 @@
+#!/bin/bash -e
+
 # Vercel's NPM is too old T.T
 rm -f package-lock.json
 
