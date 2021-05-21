@@ -15,12 +15,13 @@ To build and deploy the site follow the recipe below.
 ```sh
 git pull   # make sure it's up to date
 cd etc/docker
-make clean && make && make dist
+make ci
 ```
 
  * In `jscoq.github.io` (this repo):
 ```sh
 git pull
+rm -rf dist
 ci/assemble.js -d ../jscoq/etc/docker/dist
 ```
 
@@ -47,8 +48,7 @@ opam switch create wacoq 4.10.2
 ```sh
 git pull
 ./etc/setup.sh
-make coq && make && make dist-npm && make install
-npm link    # makes `wacoq` cli available
+make ci
 ```
 
  * In `jscoq+wacoq` (https://github.com/jscoq/jscoq/tree/v8.13+wacoq):
@@ -61,14 +61,37 @@ make && make dist-npm
  * In `jscoq-addons` (https://github.com/jscoq/addons):
 ```sh
 git pull && git submodule update
-make CONTEXT=wacoq
-make CONTEXT=wacoq set-ver
-make CONTEXT=wacoq pack
+make CONTEXT=wacoq ci
 ```
 
  * In `jscoq.github.io` (this repo):
 ```sh
 git pull
 cd wa
+rm -rf dist
 ci/assemble.js -d ../../jscoq+wacoq ../../jscoq-addons
+```
+
+### Software Foundations
+
+To clone (these flags are useful for faster checkout):
+```sh
+git clone --filter=blob:limit=1m --depth=1 -b jscoq git@github.com:DeepSpec/sfdev
+```
+
+ * In `sfdev`;
+```sh
+git pull   # unless you just cloned :)
+npm i ../jscoq+wacoq/wacoq-x.x.x.tar.gz   # with appropriate path & version
+npm i                      # install remaining dependencies
+opam switch wacoq && eval `opam env`
+( cd lf && make full TESTERS=no && make jscoq )
+( cd plf && make full TESTERS=no && make jscoq )
+```
+
+ * In `jscoq.github.io` (this repo):
+```sh
+git pull
+cd ext/sf
+./haul-from ../sfdev   # with appropriate path
 ```
