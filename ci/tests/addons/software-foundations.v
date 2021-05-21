@@ -2,7 +2,7 @@
 From LF Require Import Basics.
 From LF Require Import Induction.
 From LF Require Import Lists.
-(* From LF Require Import IndProp. *) (* <- stack overflow :( *)
+From LF Require Import IndProp.
 From LF Require Import Poly.
 
 From PLF Require Import Imp.
