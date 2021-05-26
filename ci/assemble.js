@@ -172,7 +172,7 @@ class Integration {
         var toInstall = Object.keys(this.getDependencies()).map(nm => `${nm}@${ver}`);
 
         if (toInstall.length > 0) {
-            const npm = require('global-npm');
+            const npm = (await import('global-npm')).default;
             await npm.load(() => { });
             await new Promise(resolve => npm.commands.install(toInstall, resolve));
             console.log('🐿  ✔︎');

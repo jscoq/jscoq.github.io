@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-const fs = require('fs');
+
+import fs from 'fs';
+import commander from 'commander';
 
 
 function getPackages() {
@@ -30,7 +32,7 @@ function anxiety() {
     var files = getDeployables();
 
     for (let fn of files) {
-        console.log(`npm publish --access public ${fn}`);
+        console.log(`npm publish --access public ./${fn}`);
     }
 
     if (files.length == 0) console.warn('no packages to deploy');
@@ -43,7 +45,7 @@ function install(ver = 'latest') {
 
 
 function main() {
-    const p = new (require('commander').Command)();
+    const p = new commander.Command();
     p.command('npm').action(anxiety)
     p.command('website').action(() => install())
     p.parse(process.argv);
