@@ -19,7 +19,7 @@ if [ -d $fn ] ; then echo "✓ $fn";
     cp $fn/jscoq-tester.html tools/
 else echo "✗ $fn"; ok=0; fi
 
-for vol in lf plf ; do
+for vol in lf plf vfa ; do
     fn=$D/_built/$vol/full
     if [ -d $fn ] ; then echo "✓ $fn"; 
         rm -rf $vol/full
@@ -32,6 +32,16 @@ done
 if [ $ok != 1 ] ; then echo 'error: some directories are missing'; exit 1; fi
 
 # touchup paths
-sed -i 's/(.*\/\(node_modules\/.*jscoq-splash.png\))/(\/wa\/\1)/' common/css/jscoq.css
-sed -i 's/".*\/\(node_modules\/.*jscoq-loader.js\)"/"\/wa\/\1"/' */full/*.html
-sed -i "s/'..\/_built'/'..'/" tools/jscoq-tester.html
+is_gnu_sed() {
+  sed --version >/dev/null 2>&1
+}
+
+if is_gnu_sed; then
+    INPLACE="-i"
+else
+    INPLACE="-i ''"
+fi
+
+sed $INPLACE 's/(.*\/\(node_modules\/.*jscoq-splash.png\))/(\/wa\/\1)/' common/css/jscoq.css
+sed $INPLACE 's/".*\/\(node_modules\/.*jscoq-loader.js\)"/"\/wa\/\1"/' */full/*.html
+sed $INPLACE "s/'..\/_built'/'..'/" tools/jscoq-tester.html

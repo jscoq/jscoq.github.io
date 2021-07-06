@@ -1,12 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<link href="common/css/sf.css" rel="stylesheet" type="text/css"/>
-<title>Software Foundations</title>
-<!-- add to head -->
-<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link href="common/css/sf.css" rel="stylesheet" type="text/css" />
+  <title>Software Foundations</title>
+  <!-- add to head -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 <style>
 .unavailable {
     opacity: 0.75;
@@ -15,6 +15,11 @@
 }
 .unavailable * {
     pointer-events: none;
+}
+.unavailable .tab i {
+  opacity: 0.6;
+  float: right;
+  font-weight: normal;
 }
 .jscoq-logo {
     height: 75px;
@@ -26,106 +31,128 @@
 
 <body class="sf_home">
 
-<div id="page">
+  <div id="page">
 
-<div id="header">
-<!-- added to header -->
-<img src="common/media/image/sf_logo_lg.png" width="400px" style="padding-bottom:50px;">
-<img src="./jscoq-logo.png" class="jscoq-logo">
+    <div id="header">
+      <!-- added to header -->
+      <img src="common/media/image/sf_logo_lg.png" width="400px" style="padding-bottom:50px;">
+      <img src="./jscoq-logo.png" class="jscoq-logo">
 
-<p><strong>Welcome to the jsCoq-powered version of Software Foundations.</strong></p>
+      <p><strong>Welcome to the jsCoq-powered version of Software Foundations.</strong></p>
 
-<p>This version contains the same text and code from the beloved Software Foundations series.
-All the code in the book is executable and can be run directly on the page while reading the book.
-Look for the jsCoq icon on the top right corner of each page.
-</p>
+      <p>This version contains the same text and code from the beloved Software Foundations series.
+      All the code in the book is executable and can be run directly on the page while reading the book.
+      Look for the jsCoq icon on the top right corner of each page.
+      </p>
 
-<div style="margin-top: 30px;">
-<div class='column pub'>
+      <div style="margin-top:30px;">
 
-<table class="logical">
-<tr>
-<td class="tab">Volume 1</td>
-</tr>
+        <div class='column pub'>
+          <table class="logical">
+            <tr>
+              <td class="tab">Volume 1</td>
+            </tr>
+            <tr>
+              <td>
+                <p><i>Logical Foundations</i> is the entry-point to the series. It covers
+                  functional programming, basic concepts of logic, computer-assisted theorem
+                  proving, and Coq.</p>
+                <a href="lf/full/toc.html"><img src="common/media/image/lf_icon.jpg" width="200px" /></a>
+              </td>
+            </tr>
+          </table>
+        </div>
 
-<tr>
-<td>
-<p><i>Logical Foundations</i> is the entry-point to the series. It covers
-  functional programming, basic concepts of logic, computer-assisted theorem
-  proving, and Coq.</p>
-<a href="lf/full/toc.html"><img src="common/media/image/lf_icon.jpg" width="200px"></a>
-</td>
+        <div class='column pub'>
+          <table class="language_found">
+            <tr>
+              <td class="tab">Volume 2</td>
+            </tr>
+            <tr>
+              <td>
+                <p><i>Programming Language Foundations</i> surveys the theory of programming languages, including
+                  operational semantics, Hoare logic, and static type systems.</p>
+                <a href="plf/full/toc.html"><img src="common/media/image/plf_icon.jpg" width="200px" /></a>
+              </td>
+            </tr>
+          </table>
+        </div>
 
-</table>
+        <div class='column pub'>
+          <table class="algo">
+            <tr>
+              <td class="tab">Volume 3</td>
+            </tr>
+            <tr>
+              <td>
+                <p><i>Verified Functional Algorithms</i> shows how a variety of fundamental
+                  data structures can be specified and mechanically verified.<br/><br/></p>
+                <a href="vfa/full/toc.html"><img src="common/media/image/vfa_icon.jpg" width="200px"></a>
+              </td>
+            </tr>
+          </table>
+        </div>
 
-</div>
-<div class='column pub'>
-<table class="language_found">
-<tr>
-<td class="tab">Volume 2</td>
-</tr>
+        <div class='column pub'>
+          <table class="qc unavailable">
+            <tr>
+              <td class="tab">Volume 4 <i>(not available yet)</i></td>
+            </tr>
+            <tr>
+              <td>
+                <p><i>QuickChick: Property-Based Testing in Coq</i>
+                  introduces tools for combining randomized
+                  property-based testing with formal
+                  specification and proof in the Coq ecosystem.</p>
+                <a href="qc-current/index.html"><img src="common/media/image/qc_icon.jpg" width="200px"></a>
+              </td>
+            </tr>
+          </table>
+        </div>
 
-<tr>
-<td>
-<p><i>Programming Language Foundations</i> surveys the theory of programming languages, including operational semantics, Hoare logic, and static type systems.</p>
-<a href="plf/full/toc.html"><img src="common/media/image/plf_icon.jpg" width="200px"></a>
-</td>
+        <div class='column pub'>
+          <table class="vc unavailable">
+            <tr>
+              <td class="tab">Volume 5 <i>(not available yet)</i></td>
+            </tr>
+            <tr>
+              <td>
+                <p><i>Verifiable C</i> is an extended hands-on tutorial on specifying and
+                  verifying real-world C programs using the Princeton Verified Software
+                  Toolchain.<br/><br/></p>
+                <a href="vc-current/index.html"><img src="common/media/image/vc-icon.png" width="200px"></a>
+              </td>
+            </tr>
+          </table>
+        </div>
 
-</table>
+        <div class='column pub'>
+          <table class="slf unavailable">
+            <tr>
+              <td class="tab">Volume 6 <i>(not available yet)</i></td>
+            </tr>
+            <tr>
+              <td>
+                <p><i>Separation Logic Foundations</i> is an in-depth
+                  introduction to separation logic&mdash;a practical approach to
+                  modular verification of imperative programs&mdash;and how
+                  to build program verification
+                  tools on top of it.<br/><br/></p> 
+                <a href="slf-current/index.html"><img src="common/media/image/slf-icon.png" width="200px"></a>
+              </td>
+            </tr>
+          </table>
+        </div>
 
+      </div>
+    </div>
+  </div>
 
-</div>
-</div>
-
-
-<div class='column pub'>
-
-<table class="algo unavailable">
-<tr>
-<td class="tab">Volume 3</td>
-</tr>
-
-<tr>
-<td>
-<p><i>Verified Functional Algorithms</i> shows how a variety of fundamental
-  data structures can be specified and mechanically verified.</p>
-<a href="vfa/full/toc.html"><img src="common/media/image/vfa_icon.jpg" width="200px"></a>
-</td>
-
-</table>
-
-    (not available yet)
-
-</div>
-
-<div class='column pub'>
-
-<table class="qc unavailable">
-<tr>
-<td class="tab">Volume 4</td>
-</tr>
-
-<tr>
-<td>
-<p><i>QuickChick: Property-Based Testing in Coq</i> introduces tools and
-  techniques for combining randomized property-based testing with formal
-  specification and proof in the Coq ecosystem.</p>
-<a href="qc/full/toc.html"><img src="common/media/image/qc_icon.jpg" width="200px"></a>
-</td>
-
-</table>
-
-
-</div>
-
-
-
-</div>
-
-<div id="main_home">
-<div id="index_content">
-
-</div>
+  <div id="main_home">
+    <div id="index_content">
+    </div>
+  </div>
 
 </body>
+
 </html>
