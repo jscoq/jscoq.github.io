@@ -36,12 +36,13 @@ vercel alias set coq-p-wr.vercel.app coq-next.vercel.app
 
 ### waCoq
 
-No Dockerfile yet (sorry), you need to install OCaml 4.10.2, OPAM, Node.js, NPM,
+No Dockerfile yet (sorry), you need to install OCaml 4.12.0, OPAM, Node.js, NPM,
 and [wasi-sdk 12](https://github.com/WebAssembly/wasi-sdk/releases/tag/wasi-sdk-12).
+The build scripts assume that the latter is installed in the standard location, `/opt/wasi-sdk`.
 
  * Preparation: create `wacoq` switch.
 ```sh
-opam switch create wacoq 4.10.2
+opam switch create wacoq 4.12.0
 ```
 
  * In `wacoq-bin` (https://github.com/corwin-of-amber/wacoq-bin):
@@ -81,7 +82,8 @@ git clone --filter=blob:limit=1m --depth=1 -b jscoq git@github.com:DeepSpec/sfde
 
  * In `sfdev`;
 ```sh
-git pull   # unless you just cloned :)
+git pull       # unless you just cloned :)
+rm -rf _built  # if you have some old build there
 npm i ../jscoq+wacoq/wacoq-x.x.x.tar.gz   # with appropriate path & version
 npm i                      # install remaining dependencies
 opam switch wacoq && eval `opam env`
