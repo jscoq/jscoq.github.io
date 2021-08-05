@@ -16,10 +16,14 @@
 .unavailable * {
     pointer-events: none;
 }
+.unavailable img {
+    filter: contrast(0.5) brightness(1.35);
+}
 .unavailable .tab i {
-  opacity: 0.6;
-  float: right;
-  font-weight: normal;
+    color: white;
+    opacity: 0.6;
+    float: right;
+    font-weight: normal;
 }
 .jscoq-logo {
     height: 75px;
@@ -127,9 +131,9 @@
         </div>
 
         <div class='column pub'>
-          <table class="slf unavailable">
+          <table class="slf">
             <tr>
-              <td class="tab">Volume 6 <i>(not available yet)</i></td>
+              <td class="tab">Volume 6</td>
             </tr>
             <tr>
               <td>
@@ -138,7 +142,7 @@
                   modular verification of imperative programs&mdash;and how
                   to build program verification
                   tools on top of it.<br/><br/></p> 
-                <a href="slf-current/index.html"><img src="common/media/image/slf-icon.png" width="200px"></a>
+                <a href="slf/full/toc.html"><img src="common/media/image/slf-icon.png" width="200px"></a>
               </td>
             </tr>
           </table>
