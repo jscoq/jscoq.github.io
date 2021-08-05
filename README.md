@@ -36,11 +36,28 @@ vercel alias set coq-p-wr.vercel.app coq-next.vercel.app
 
 ### waCoq
 
-No Dockerfile yet (sorry), you need to install OCaml 4.12.0, OPAM, Node.js, NPM,
-and [wasi-sdk 12](https://github.com/WebAssembly/wasi-sdk/releases/tag/wasi-sdk-12).
-The build scripts assume that the latter is installed in the standard location, `/opt/wasi-sdk`.
+ * In `jscoq+wacoq` (https://github.com/jscoq/jscoq/tree/v8.13+wacoq):
+```sh
+git pull   # make sure it's up to date
+cd etc/docker
+make ci
+```
 
- * Preparation: create `wacoq` switch.
+ * In `jscoq.github.io` (this repo):
+```sh
+git pull
+cd wa
+rm -rf dist
+ci/assemble.js -d ../../jscoq+wacoq/etc/docker/dist
+```
+
+### Software Foundations
+
+This step requires jsCoq SDK, which is not built by the Docker build script at the
+moment (sorry). To build it locally, you need to install OCaml 4.12.0 and OPAM.
+
+ * Preparation: create `wacoq` switch. (Only need to do once or if the required
+   version of OCaml changes.)
 ```sh
 opam switch create wacoq 4.12.0
 ```
@@ -49,31 +66,12 @@ opam switch create wacoq 4.12.0
 ```sh
 git pull
 ./etc/setup.sh
-make ci
+make coq && make install
 ```
 
- * In `jscoq+wacoq` (https://github.com/jscoq/jscoq/tree/v8.13+wacoq):
-```sh
-git pull
-npm i ../wacoq-bin/wacoq-bin-x.x.x.tar.gz   # with appropriate path & version
-npm i                      # install remaining dependencies
-make && make dist-npm
-```
- * In `jscoq-addons` (https://github.com/jscoq/addons):
-```sh
-git pull && git submodule update
-make CONTEXT=wacoq ci
-```
-
- * In `jscoq.github.io` (this repo):
-```sh
-git pull
-cd wa
-rm -rf dist
-ci/assemble.js -d ../../jscoq+wacoq ../../jscoq-addons
-```
-
-### Software Foundations
+Next are instructions for building the Software Foundations book with integrated jsCoq
+on all pages. It is actually waCoq, because the JS version causes too many stack
+overflows.
 
 To clone (these flags are useful for faster checkout):
 ```sh
@@ -84,16 +82,18 @@ git clone --filter=blob:limit=1m --depth=1 -b jscoq git@github.com:DeepSpec/sfde
 ```sh
 git pull       # unless you just cloned :)
 rm -rf _built  # if you have some old build there
-npm i ../jscoq+wacoq/wacoq-x.x.x.tar.gz   # with appropriate path & version
-npm i                      # install remaining dependencies
-opam switch wacoq && eval `opam env`
-( cd lf && make full TESTERS=no && make jscoq )
-( cd plf && make full TESTERS=no && make jscoq )
+npm i .../wacoq-x.x.x.tar.gz   # with appropriate path & version
+npm i                          # install remaining dependencies
+
+eval `opam env --set-switch --switch=wacoq`
+for vol in lf plf vfa slf; do
+    ( cd $vol && make full TESTERS=no && make jscoq )
+done
 ```
 
  * In `jscoq.github.io` (this repo):
 ```sh
 git pull
 cd ext/sf
-./haul-from ../sfdev   # with appropriate path
+./haul-from .../sfdev   # with appropriate path
 ```
