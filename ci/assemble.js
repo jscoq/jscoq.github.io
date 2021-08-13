@@ -100,7 +100,8 @@ function assemble(opts) {
         if (toInstall.length > 0) {
             const npm = (await import('global-npm')).default;
             await new Promise(resolve => npm.load(resolve));
-            await new Promise(resolve => npm.commands.install(toInstall, resolve));
+            var r = await new Promise(resolve => npm.commands.install(toInstall, resolve));
+            if (r) { console.log(r); return; }
         }
 
         if (opts.copyDist) {
