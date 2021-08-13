@@ -1,6 +1,7 @@
 #!/bin/bash
 
 D=$1
+VOLUMES="lf plf vfa slf"
 
 ok=1
 
@@ -19,7 +20,7 @@ if [ -d $fn ] ; then echo "✓ $fn";
     cp $fn/jscoq-tester.html tools/
 else echo "✗ $fn"; ok=0; fi
 
-for vol in lf plf vfa ; do
+for vol in $VOLUMES ; do
     fn=$D/_built/$vol/full
     if [ -d $fn ] ; then echo "✓ $fn"; 
         rm -rf $vol/full
