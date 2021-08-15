@@ -53,7 +53,7 @@ function assemble(opts) {
             var fp = path.join(dir, fn),
                 manifest = await new PackageTarball(fp).getManifest();
 
-            if (manifest && manifest.name && (manifest.name == pkgMaster ||
+            if (manifest && manifest.name && (pkgMaster.includes(manifest.name) ||
                                               manifest.name.startsWith(pkgPrefix))) {
                 console.log(`${manifest.name}@${manifest.version}  <--  ${fn}`);
                 toInstall.push(ir.fileLocation(fp));
@@ -126,11 +126,12 @@ class Integration {
     getDependencies() {
         var m = JSON.parse(fs.readFileSync('package.json'));
         
-        var p = {}, k = this.opts.pkgMaster;
-        if (m.dependencies[k]) p[k] = m.dependencies[k];
+        var p = {};
+        for (let k of this.opts.pkgMaster || [])
+            if (m.dependencies[k]) p[k] = m.dependencies[k];
 
         for (let k in m.dependencies) {
-            if (k.startsWith('@jscoq/'))
+            if (k.startsWith(this.opts.pkgPrefix))
                 p[k] = m.dependencies[k];
         }
 
@@ -142,18 +143,22 @@ class Integration {
         
         var p = {};
         for (let [k, v] of Object.entries(m.packages)) {
-            p[k] = v.resolved;
+            p[path.basename(k)] = v.resolved;
         }
 
         return p;
     }
 
     getDeployables() {
-        var p = this.getInstalled(), files = [];
+        var p = this.getInstalled(), files = [],
+            isMaster = k => this.opts.pkgMaster?.includes(k);
 
-        for (let v of Object.values(p)) {
+        for (let [k, v] of Object.entries(p)) {
             var mo = /^file:(.*)$/.exec(v);
-            if (mo) files.push(mo[1]);
+            if (mo) {
+                if (isMaster(k)) files.unshift(mo[1]);  // masters go first
+                else files.push(mo[1]);
+            }
         }
 
         return files;
@@ -278,10 +283,10 @@ if (isMain()) {
     
     assemble({DEFAULT_CONTEXT: 'jscoq+64bit',
               pkgDir: './node_modules',
-              pkgMaster: 'jscoq',
+              pkgMaster: ['jscoq'],
               pkgPrefix: '@jscoq/',
               distRel: '_build/dist'});
 
 }
 
-export { assemble }
+export { assemble, Integration }

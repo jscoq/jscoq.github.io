@@ -10,7 +10,7 @@ import { assemble } from  '../../ci/assemble.js';
     
 assemble({DEFAULT_CONTEXT: 'wacoq',
             pkgDir: './node_modules',
-            pkgMaster: 'wacoq',
+            pkgMaster: ['wacoq'],
             pkgPrefix: '@wacoq/',
             distRel: '_'});
 
