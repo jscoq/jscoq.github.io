@@ -9,7 +9,7 @@ To build and deploy the site follow the recipe below.
 
 ## CI Recipe
 
-### jsCoq
+### jsCoq + waCoq
 
  * In `jscoq` (https://github.com/jscoq/jscoq):
 ```sh
@@ -18,11 +18,22 @@ cd etc/docker
 make ci
 ```
 
+The `ci` target cleans previous Docker images and builds the JS and WA backends,
+as well as the UI frontend and addons.
+To build just JS, run `make clean && make js-build && js-dist`;
+replace with `wa-build` and `wa-dist` for WA only.
+
  * In `jscoq.github.io` (this repo):
 ```sh
+# jsCoq
 git pull
 rm -rf dist
 ci/assemble.js -d ../jscoq/etc/docker/dist
+
+# waCoq
+cd  wa
+rm -rf dist
+ci/assemble.js -d ../../jscoq+wacoq/etc/docker/dist
 ```
 
 To deploy, run `vercel`.
@@ -34,22 +45,6 @@ To set as preview (coq-next.vercel.app), run
 vercel alias set coq-p-wr.vercel.app coq-next.vercel.app
 ```
 
-### waCoq
-
- * In `jscoq+wacoq` (https://github.com/jscoq/jscoq/tree/v8.13+wacoq):
-```sh
-git pull   # make sure it's up to date
-cd etc/docker
-make ci
-```
-
- * In `jscoq.github.io` (this repo):
-```sh
-git pull
-cd wa
-rm -rf dist
-ci/assemble.js -d ../../jscoq+wacoq/etc/docker/dist
-```
 
 ### Software Foundations
 
