@@ -6,7 +6,6 @@
 
 import fs from 'fs';
 import path from 'path';
-import mkdirp from 'mkdirp';
 import glob from 'glob';
 import fetch from 'node-fetch';
 import Progress from 'node-fetch-progress';
@@ -20,8 +19,9 @@ function assemble(opts) {
     const o = commander
         //.option('-l, --link', 'create symbolic links instead of copying')
         .option('--npm [version]', 'Install from npm (using `version` if given, otherwise \"latest\")')
-        .option('-c,--build-context <switch>', 'Dune context in which to look for build artifacts',
+        .option('--build-context <switch>', 'Dune context in which to look for build artifacts',
                 opts.DEFAULT_CONTEXT)
+        .option('-c,--clean', 'Clean dist directory')
         .option('-d,--copy-dist', 'Copy files to dist directory before install')
         .parse();
 
@@ -29,6 +29,8 @@ function assemble(opts) {
 
     var ir = new Integration(opts),
         dist = new DistDir();
+
+    if (o.clean) dist.clean();
 
     if (o.npm) {
         if (o.npm == 'ls')
@@ -193,8 +195,12 @@ class DistDir {
         this.dir = dir;
     }
 
+    clean() {
+        fs.rmSync(this.dir, {recursive: true, force: true});
+    }
+
     download(url) {
-        mkdirp.sync(this.dir);
+        fs.mkdirSync(this.dir, {recursive: true});
         var fn = path.join(this.dir, url.replace(/.*[/]/, ''));
         return new Promise(async resolve =>
             withProgress(await fetch(url)).body.pipe(fs.createWriteStream(fn))
@@ -202,7 +208,7 @@ class DistDir {
     }
 
     copy(fp) {
-        mkdirp.sync(this.dir);
+        fs.mkdirSync(this.dir, {recursive: true});
         var fn = this.filename(fp);
         return new Promise(resolve => fs.copyFile(fp, fn, () => resolve(fn)));
     }
@@ -242,7 +248,7 @@ class DistDir {
     }
 
     copyAndRedirect(fp) {
-        mkdirp.sync(this.dir);
+        fs.mkdirSync(this.dir, {recursive: true});
         var fn = this.filename(fp),
             s = new PackageTarball(fp).transformManifest(this.filename(fp),
                     pjson => this.redirectPackageJson(pjson));
