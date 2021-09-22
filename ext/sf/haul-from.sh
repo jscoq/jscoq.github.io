@@ -21,13 +21,16 @@ if [ -d $fn ] ; then echo "✓ $fn";
 else echo "✗ $fn"; ok=0; fi
 
 for vol in $VOLUMES ; do
-    fn=$D/_built/$vol/full
-    if [ -d $fn ] ; then echo "✓ $fn"; 
-        rm -rf $vol/full
-        mkdir -p $vol/full
-        cp -R $fn/*.html $vol/full/
-        (cd $vol/full && ln -s ../../common .)
-    else echo "✗ $fn"; ok=0; fi
+    for cut in full terse ; do
+        fn=$D/_built/$vol/$cut
+        if [ -d $fn ] ; then echo "✓ $fn"; 
+            rm -rf $vol/$cut
+            mkdir -p $vol/$cut
+            cp -R $fn/*.html $vol/$cut
+            (cd $vol/$cut && ln -s ../../common .)
+        #else echo "✗ $fn"; ok=0
+        fi
+    done
 done
 
 if [ $ok != 1 ] ; then echo 'error: some directories are missing'; exit 1; fi
@@ -44,5 +47,5 @@ else
 fi
 
 sed $INPLACE 's/(.*\/\(node_modules\/.*jscoq-splash.png\))/(\/wa\/\1)/' common/css/jscoq.css
-sed $INPLACE 's/".*\/\(node_modules\/.*jscoq-loader.js\)"/"\/wa\/\1"/' */full/*.html
+sed $INPLACE 's/".*\/\(node_modules\/.*jscoq-loader.js\)"/"\/wa\/\1"/' */*/*.html
 sed $INPLACE "s/'..\/_built'/'..'/" tools/jscoq-tester.html
