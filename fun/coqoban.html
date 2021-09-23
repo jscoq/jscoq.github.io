@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <title>Çoqoban</title>
+
+    <script src="../node_modules/jscoq/ui-js/jscoq-loader.js"></script>
+
+    <style>
+    .constr\.notation[data-name]:not([data-name=""]) {
+        display: inline-block;
+        width: .75em;
+        overflow: visible;
+        color: transparent;
+    }
+    .constr\.notation[data-name]::before {
+      color: initial;
+      display: inline-block;
+      width: 0.75em; height: 0.75em;
+    }
+    .constr\.notation[data-name="#"]::before { content: "🔳"; }
+    .constr\.notation[data-name="_"]::before { content: "◽️"; opacity: 0.5; }
+    .constr\.notation[data-name="O"]::before { content: "⭕️"; }
+    .constr\.notation[data-name="X"]::before { content: "📦"; }
+    .constr\.notation[data-name="*"]::before { content: "🎁"; }
+    .constr\.notation[data-name="+"]::before { content: "🕺"; }
+    .constr\.notation[data-name="o"]::before { content: "🤸‍♂️"; }
+    .coqoban--success::after {
+      content: "🎉💃🕺🎉";
+      display: block;
+      text-align: center;
+      font-size: 50pt;
+      margin-top: 80px;
+    }
+    #emoji { display: none; }
+    p { line-height: 1.3; }
+    p i { font-family: 'Times New Roman', Times, serif; font-size: 110%; }
+    p code { background: #8881; padding: 0 2px; }
+    </style>
+  </head>
+
+<body class="jscoq-main">
+  <div id="ide-wrapper" class="toggled">
+    <div id="code-wrapper">
+      <div id="document">
+        <h1>Çoqoban!</h1>
+        <p>
+            Did you know you can play Sokoban, the classic Japanese logic puzzle game,
+            right in Coq?
+            With <a href="https://github.com/coq-community/coqoban">Coqoban</a>, you can!
+        </p>
+<textarea id="preamble">
+From Coqoban Require Import Coqoban_engine Coqoban_levels.</textarea>
+
+        <p>
+          Each puzzle is formulated via a proposition that can be used as a goal.
+          Tactics move the warehouse keeper, and the goal is discharged as soon as
+          all the boxes are in place.
+        </p>
+<textarea id="emoji">
+Tactic Notation "→" := e.
+Tactic Notation "←" := w.
+Tactic Notation "↑" := n.
+Tactic Notation "↓" := s.
+</textarea>
+
+<textarea id="play">
+Goal solvable microban_1.
+unfold microban_1.
+</textarea>
+
+        <p>
+          With the magic that is Web programming, it becomes even more fun.
+          Click the board shown in the goal pane to the right, and press some arrow
+          keys on your keyboard.
+          Press Backspace to undo one move.
+        </p>
+        <p>
+          The default goal <code>microban_1</code> is not an actual level,
+          it just demonstrates the concept;
+          for a true challenge, replace it with <code>Level_<i>n</i></code>,
+          where <i>n</i> is a level number, 1..355.
+        </p>
+        <p>Good luck! 🇯🇵🤺</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- jsCoq configuration part -->
+  <script type="text/javascript">
+
+    var jscoq_ids  = ['preamble', 'emoji', 'play'];
+    var jscoq_opts = {
+        prelude:       true,
+        implicit_libs: true,
+        editor:        { mode: { 'company-coq': true }, keyMap: 'default' },
+        init_pkgs:     ['init'],
+        all_pkgs:      ['coq', 'coqoban']
+    };
+
+    var coq;
+    (async () => {
+      coq = await JsCoq.start(jscoq_ids, jscoq_opts);
+      await coq.when_ready;
+      while (coq.goNext(true));
+
+      class CoqobanPprint extends FormatPrettyPrint {
+        goals2DOM(goals) {
+          var h = super.goals2DOM(goals);
+          if (!goals.goals.length && !goals.given_up.length)
+            h.addClass('coqoban--success');
+          return h;
+        }
+      }
+      coq.pprint = new CoqobanPprint();
+    })();
+  </script>
+
+  <script>
+    function go(cmd) {
+      var cm = coq.provider.snippets[2].editor;
+      cm.replaceRange(` ${cmd}.`, cm.getCursor(), null, 'coqoban');
+      if (cm.getCursor().ch > 50)
+        cm.replaceRange('\n', cm.getCursor());
+      coq.goCursor();
+    }
+
+    function undo() {
+      var cm = coq.provider.snippets[2].editor;
+      cm.undo(); // neat!
+    }
+
+    document.body.addEventListener('keydown', ev => {
+      if (!ev.target.closest('.CodeMirror')) {
+        switch(ev.key) {
+          case "ArrowRight": go('→'); break;
+          case "ArrowLeft":  go('←'); break;
+          case "ArrowUp":    go('↑'); break;
+          case "ArrowDown":  go('↓'); break;
+          case "Backspace":  undo(); break;
+        }
+      }
+    });
+  </script>
+</body>
