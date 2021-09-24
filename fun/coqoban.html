@@ -36,6 +36,8 @@
     p { line-height: 1.3; }
     p i { font-family: 'Times New Roman', Times, serif; font-size: 110%; }
     p code { background: #8881; padding: 0 2px; }
+    .levels a { margin-left: .5em; }
+    .Pp_break.br br { display: none !important; }
     </style>
   </head>
 
@@ -81,6 +83,11 @@ unfold microban_1.
           for a true challenge, replace it with <code>Level_<i>n</i></code>,
           where <i>n</i> is a level number, 1..355.
         </p>
+<textarea id="level">
+</textarea>
+        <p class="levels">Go to level:</p>
+        <p>
+          <i style="font-size: 90%">(Disclaimer: It might be a bit slow on the larger levels... it's still two interpreters stacked one on top of the other, after all.)</i></p>
         <p>Good luck! 🇯🇵🤺</p>
       </div>
     </div>
@@ -89,7 +96,7 @@ unfold microban_1.
   <!-- jsCoq configuration part -->
   <script type="text/javascript">
 
-    var jscoq_ids  = ['preamble', 'emoji', 'play'];
+    var jscoq_ids  = ['preamble', 'emoji', 'play', 'level'];
     var jscoq_opts = {
         prelude:       true,
         implicit_libs: true,
@@ -111,6 +118,10 @@ unfold microban_1.
             h.addClass('coqoban--success');
           return h;
         }
+        adjustBreaks(jdom) {
+          super.adjustBreaks(jdom);
+          jdom.find('.Pp_break.br').removeClass('br');
+        }
       }
       coq.pprint = new CoqobanPprint();
     })();
@@ -118,7 +129,7 @@ unfold microban_1.
 
   <script>
     function go(cmd) {
-      var cm = coq.provider.snippets[2].editor;
+      var cm = coq.provider.currentFocus.editor;
       cm.replaceRange(` ${cmd}.`, cm.getCursor(), null, 'coqoban');
       if (cm.getCursor().ch > 50)
         cm.replaceRange('\n', cm.getCursor());
@@ -126,8 +137,20 @@ unfold microban_1.
     }
 
     function undo() {
-      var cm = coq.provider.snippets[2].editor;
+      var cm = coq.provider.currentFocus.editor;
       cm.undo(); // neat!
+    }
+
+    function gotoLevel(lvl) {
+      var s = coq.provider.snippets[2], cm = s.editor;
+      if (cm.isClean()) {
+        cm.execCommand('goDocEnd'); cm.replaceSelection('\nAbort.');
+      }
+
+      s = coq.provider.snippets[3]; cm = s.editor;
+      cm.setValue(`Goal solvable Level_${lvl}. unfold Level_${lvl}.\n`);
+      cm.execCommand('goDocEnd');
+      s.focus(); setTimeout(() => coq.goCursor(), 50 /* uhmm */ );
     }
 
     document.body.addEventListener('keydown', ev => {
@@ -141,5 +164,13 @@ unfold microban_1.
         }
       }
     });
+
+    var levels = document.querySelector('.levels');
+    for (let lvl = 1; lvl <= 20; lvl++) {
+      let a = document.createElement('a');
+      a.textContent = lvl; a.setAttribute('href', `#${lvl}`);
+      levels.append(a);
+      a.addEventListener('click', () => gotoLevel(lvl));
+    }
   </script>
 </body>
