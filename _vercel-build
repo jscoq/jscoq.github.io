@@ -12,3 +12,6 @@ if [ -e wa ]; then ( cd wa; npm run vercel-build ); fi
 
 # Export `ext/` if available
 if [ -e ext ]; then mv ext public/ ; fi
+
+# Export `fun/` if available
+if [ -e fun ]; then mv fun public/ ; fi
