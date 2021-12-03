@@ -49,3 +49,6 @@ fi
 sed $INPLACE 's/(.*\/\(node_modules\/.*jscoq-splash.png\))/(\/wa\/\1)/' common/css/jscoq.css
 sed $INPLACE 's/".*\/\(node_modules\/.*jscoq-loader.js\)"/"\/wa\/\1"/' */*/*.html
 sed $INPLACE "s/'..\/_built'/'..'/" tools/jscoq-tester.html
+
+# Fix the home link
+sed $INPLACE 's/\(<div id=.logoinheader.><a href=\)[^>]*\(>\)/\1"\/ext\/sf"\2/' */*/*.html
