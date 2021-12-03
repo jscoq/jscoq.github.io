@@ -8,7 +8,6 @@
         "concat-stream": "^2.0.0",
         "fflate": "^0.4.8",
         "glob": "^7.1.6",
-        "global-npm": "^0.4.1",
         "gunzip-maybe": "^1.4.2",
         "mkdirp": "^1.0.4",
         "node-fetch": "^2.6.1",

@@ -7,6 +7,7 @@
 import fs from 'fs';
 import path from 'path';
 import glob from 'glob';
+import child_process from 'child_process';
 import fetch from 'node-fetch';
 import Progress from 'node-fetch-progress';
 import commander from 'commander';
@@ -100,10 +101,11 @@ function assemble(opts) {
             toInstall.push(...await collectFrom(loc));
         
         if (toInstall.length > 0) {
-            const npm = (await import('global-npm')).default;
-            await new Promise(resolve => npm.load(resolve));
-            var r = await new Promise(resolve => npm.commands.install(toInstall, resolve));
-            if (r) { console.log(r); return; }
+            const npm = new NpmAdapter;
+            try {
+                await npm.install(toInstall);
+            }
+            catch (e) { return; }
         }
 
         if (opts.copyDist) {
@@ -180,9 +182,8 @@ class Integration {
         var toInstall = Object.keys(this.getDependencies()).map(nm => `${nm}@${ver}`);
 
         if (toInstall.length > 0) {
-            const npm = (await import('global-npm')).default;
-            await npm.load(() => { });
-            await new Promise(resolve => npm.commands.install(toInstall, resolve));
+            const npm = new NpmAdapter;
+            await npm.install(toInstall);
             console.log('🐿  ✔︎');
         }
         else console.log('✘ no packages found.');
@@ -255,6 +256,25 @@ class DistDir {
 
         return new Promise(resolve =>
             s.on('finish', () => resolve(fn)));
+    }
+}
+
+/* Since the programmatic API has been removed, use a child process */
+class NpmAdapter {
+    opts = ['--no-audit', '--no-fund']
+
+    install(packages) {
+        if (!Array.isArray(packages)) packages = [packages];
+
+        var c = child_process.spawn('npm', ['install', ...this.opts, ...packages], {
+            stdio: 'inherit'
+        });
+        return new Promise((resolve, reject) => {
+            c.on('exit', (exitCode, signal) => {
+                var e = {exitCode, signal};
+                e.signal || e.exitCode ? reject(e) : resolve(e)
+            })
+        });
     }
 }
 
