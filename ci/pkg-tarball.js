@@ -57,7 +57,7 @@ class PackageTarball {
         });
     }
 
-    _isPackageJsonFn(fn) { return fn.match(/[/]package.json$/); }
+    _isPackageJsonFn(fn) { return fn.match(/^[^/]*[/]package.json$/); }
 }
 
 
