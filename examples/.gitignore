@@ -1,2 +1,5 @@
 *.html
+*.v
 examples.*
+_build
+.lia.cache

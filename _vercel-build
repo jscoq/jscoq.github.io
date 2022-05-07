@@ -2,6 +2,7 @@
 
 # Vercel's NPM is too old T.T
 rm -f package-lock.json
+rm -rf public  # need to clean up older build?
 
 npm i
 mkdir public
@@ -9,6 +10,9 @@ mv *.html ui-* ci node_modules public/
 
 # Build in `wa/` if available
 if [ -e wa ]; then ( cd wa; npm run vercel-build ); fi
+
+# Export `examples/` if available
+if [ -e examples ]; then mv examples public/ ; fi
 
 # Export `ext/` if available
 if [ -e ext ]; then mv ext public/ ; fi

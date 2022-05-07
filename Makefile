@@ -17,6 +17,8 @@ wa-assemble:
 
 examples-assemble:
 	cd examples && ./haul-from.sh $(JSCOQ_DIR)/examples
+	make -C examples
+	make -C examples cleanup
 
 SFDEV_DIR = $(HOME)/var/ext/sfdev
 

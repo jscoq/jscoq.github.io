@@ -2,7 +2,7 @@
 
 D=$1
 
-cp $D/*.html $D/examples.* .
+cp $D/*.html $D/*.v .
 
 # touchup paths
 is_gnu_sed() {
@@ -15,6 +15,7 @@ else
     INPLACE="-i ''"
 fi
 
+# applies to `jscoq-loader` and `jscoq-agent`
 for fn in *.html; do
-    sed $INPLACE 's@[^"]*/jscoq-loader@../node_modules/jscoq/ui-js/jscoq-loader@g' $fn
+    sed $INPLACE 's@[^"]*/jscoq-@../node_modules/jscoq/ui-js/jscoq-@g' $fn
 done
