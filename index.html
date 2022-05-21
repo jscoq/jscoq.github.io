@@ -9,7 +9,9 @@
     <style>body { visibility: hidden; } /* FOUC avoidance */</style>
     <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="node_modules/katex/dist/katex.min.css">
     <link rel="stylesheet" type="text/css" href="ui-css/landing-page.css">
+    <link rel="stylesheet" type="text/css" href="ui-css/kbd.css">
     <script src="node_modules/jscoq/ui-js/jscoq-loader.js" type="text/javascript"></script>
   </head>
 
@@ -45,7 +47,9 @@
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="examples/inf-primes.html">Infinitude of Primes</a></li>
-                <li><a class="dropdown-item" href="examples/sqrt_2.html">Irrationality of <img class="symbol-sqrt" src="ui-images/sqrt.svg">2</a></li>
+                <li><a class="dropdown-item" href="examples/sqrt_2.html">Irrationality of <span class="math"><img class="symbol-sqrt" src="ui-images/sqrt.svg">2</span></a></li>
+                <!-- these are only available from the full website -->
+                <li><a class="dropdown-item" href="/fun/coqoban.html">🎡 Çoqoban</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="/ext/sf"><img class="symbol-book" src="ui-images/book.svg">Software Foundations</a></li>
               </ul>
@@ -53,7 +57,9 @@
           </ul>
         </div>
       </div>
-      <a id="scratchpad" href="examples/scratchpad.html" title="Open scratchpad"></a>
+      <a id="scratchpad" href="scratchpad.html" title="Open scratchpad">
+        <span class="newcomer scratchpad-tip">open the scratchpad<br/>to start editing</span>
+      </a>
     </nav>
     <!------------------------------->
   
@@ -61,91 +67,92 @@
   <div>
     <h3>Welcome to the <span class="jscoq-name">jsCoq</span> Interactive Online System!</h3>
     <p>
-      Welcome to the <span class="jscoq-name">jsCoq</span> technology demo!
       <span class="jscoq-name">jsCoq</span> is an interactive,
       web-based environment for the Coq Theorem prover, and is a collaborative
       development effort. See the <a href="#team">list of contributors</a>
       below.
     </p>
     <p>
-      <span class="jscoq-name">jsCoq</span> is open source. If you find any problem or want to make
-      any contribution, you are extremely welcome! We await your
-      feedback at <a href="https://github.com/jscoq/jscoq">GitHub</a>
+      <span class="jscoq-name">jsCoq</span> is open source. If you find any problem
+      that you wish to report or want to add your own contribution,
+      you are extremely welcome! We await your feedback at
+      <a href="https://github.com/jscoq/jscoq">GitHub</a>
       and <a href="https://coq.zulipchat.com/#narrow/stream/256336-jsCoq">Zulip</a>.
     </p>
 
-    <h4>A First Example: √2 ∉ <span class="symbol-Q">ℚ</span></h4>
+    <h4>A First Example: <code>rev</code> <code>∘</code> <code>rev = id</code></h4>
     <p>
-      The following is a simple proof that <img class="symbol-sqrt" src="ui-images/sqrt.svg">2
-      cannot be expressed as the ratio of two integers; that is, for every two integers
-      <i>p</i> and <i>q</i>, (<i>p/q</i>)<sup>2</sup> ≠ 2.
-      This is a simplified version of a similar
-      <a href="https://github.com/coq-community/qarith-stern-brocot/blob/master/theories/sqrt2.v">proof by Milad Niqui</a>.
+      The following is a simple proof that <code>rev</code>, the standard list
+      reversal function as commonly defined in ML and other languages of the
+      family, is an involution.
     </p>
     <p>
-      Use <kbd>Alt</kbd>+<kbd>↓</kbd>/<kbd>↑</kbd> to step through the proof,
+      Use <span class="has-kbd"><kbd>Alt</kbd>+<kbd>↓</kbd>/<kbd>↑</kbd></span> to step through the proof,
       and observe the proof state on the right panel.
     </p>
-      <textarea class="snippet">
-From Coq Require Import Utf8 Arith Lia.
-From Examples Require Import sqrt_2.
+    <textarea class="snippet">
+From Coq Require Import List.
+Import ListNotations.</textarea>
+    <p class="interim">
+      We are going to need a simpler auxiliary lemma, one that connects
+      <code>rev</code>, <code>::</code> (the list constructor, also known
+      as <code>cons</code>), and <code>snoc</code> (the dual of
+      <code>cons</code>, a function that appends an element at the end of
+      a list).
+      This is because the latter two participate in the definition of
+      the former, <code>rev</code>.
+    </p>
 
-Theorem sqrt2_not_rational :
-  forall p q : nat, q <> 0 -> ¬ p ^ 2 = 2 * (q ^ 2).</textarea>
+    <textarea class="snippet">Lemma rev_snoc_cons A :
+  forall (x : A) (l : list A), rev (l ++ [x]) = x :: rev l.</textarea>
+    <p class="interim">
+      This proposition is proven by way of the standard induction on
+      the structure of the list <code>l</code>.
+    </p>
+    <textarea class="snippet">Proof.
+  induction l.
+  - reflexivity.
+  - simpl. rewrite IHl. simpl. reflexivity.
+Qed.</textarea>
 
     <p class="interim">
-      First, we simplify the goal a bit by inlining the
-      definition of □<sup>2</sup>.
+      Now we prove the central equality with a similar induction.
     </p>
-    <textarea class="snippet">
+    <textarea class="snippet">Theorem rev_rev A : forall (l : list A), rev (rev l) = l.
 Proof.
-  assert (forall x, x ^ 2 = x * x) as sq by (simpl; lia).
-  intros p q; rewrite! sq; clear sq.</textarea>
+  induction l.
+  - reflexivity.
+  - simpl. rewrite rev_snoc_cons. rewrite IHl.
+    reflexivity.
+Qed.</textarea>
 
     <p class="interim">
-      The proof proceeds by <a href="https://en.wikipedia.org/wiki/Mathematical_induction#Complete_(strong)_induction"></https:>complete induction</a>
-      on <span class="math"><i>q</i></span>, generalizing over
-      <span class="math"><i>p</i></code>.
+      Finally, we apply functional extensionality to produce the equality
+      as it was written in the title.
     </p>
-    <textarea class="snippet">
-  revert p.
-  induction q as [q IH] using (well_founded_ind lt_wf).
-  intros p Hneq.</textarea>
-
     <p class="interim">
-      The gist of the proof is realizing that it can be obtained by
-      instantiating the induction hypothesis with values
-      3<i>q</i><span class="symbol-minus">–</span>2<i>p</i> and
-      3<i>p</i><span class="symbol-minus">–</span>4<i>q</i>.
+      There is only one syntactic difference, which is that, in Coq, we
+      need to pass an explicit value to the implicit (generic) type
+      parameter <code>A</code> of <code>rev</code>.
     </p>
-  
-    <textarea class="snippet">
-  specialize IH with (y := 3 * q - 2 * p) (p := 3 * p - 4 * q).</textarea>
+    <textarea class="snippet">From Coq.Program Require Import Basics.
+From Coq Require Import FunctionalExtensionality.
+Open Scope program_scope.
 
-    <p class="interim">
-      The rest follows from simpler inequalities,
-      <span class="math">2<i>p</i> &lt; <span class="math">3<i>q</i>
-        &lt; 2<i>p</i><span class="symbol-plus">+</span>q</span>
-      and
-      <span class="math">4<i>q</i> &lt; <span class="math">3<i>p</i>.
-      These are not included in the example; for details, see
-      <a href="examples/sqrt_2.html">the full proof</a>.
-    </p>
-
-    <textarea class="snippet">
-  intro Heq; apply IH.
-  - apply comparison_3q2p. all: auto.
-  - apply Nat.sub_gt. apply comparison_2p3q. all: auto.
-  - rewrite! sub_square_identity.
-    + clear IH; lia.
-    + auto using comparison_2p3q, lt_le_weak.
-    + auto using comparison_4q3p, lt_le_weak.
+Theorem rev_invol A : rev (A:=A) ∘ rev (A:=A) = id.
+Proof.
+  apply functional_extensionality.
+  intro x.
+  unfold compose, id. rewrite rev_rev.
+  reflexivity.
 Qed.</textarea>
 
     <hr/> <!-- end of proof -->
 
     <h4>Quick start</h4>
     <p>
+      Use the <a href="scratchpad.html">scratchpad <span class="scratchpad-small"></span></a>
+      for a fresh page to write your proofs on.
       <span class="jscoq-name">jsCoq</span> provides basic UI for running
       and inspecting proofs, similar to IDEs such as <a href="https://coq.inria.fr/refman/practical-tools/coqide.html">CoqIDE</a>,
       <a href="https://proofgeneral.github.io/">Proof General</a>,
@@ -157,12 +164,12 @@ Qed.</textarea>
       <tr><th>Button</th><th>Key binding</th><th>Action</th></tr>
       <tr>
         <td><img src="ui-images/power-button-512-black.png" height="20px"></td>
-        <td><kbd>F8</kbd></td>
+        <td class="has-kbd"><kbd>F8</kbd></td>
         <td>Toggles the goal panel.</td>
       </tr>
       <tr>
         <td><img src="ui-images/down.png" height="15px"><img src="ui-images/up.png" height="15px"></td>
-        <td>
+        <td class="has-kbd">
           <kbd>Alt</kbd>+<kbd>↓</kbd>/<kbd>↑</kbd> or<br/>
           <kbd>Alt</kbd>+<kbd>N</kbd>/<kbd>P</kbd>
         </td>
@@ -170,7 +177,7 @@ Qed.</textarea>
       </tr>
       <tr>
         <td><img src="ui-images/to-cursor.png" height="20px"></td>
-        <td>
+        <td class="has-kbd">
           <kbd>Alt</kbd>+<kbd>Enter</kbd> or<br/> <kbd>Ctrl</kbd>+<kbd>Enter</kbd><br/>
           (⌘ on Mac)
         </td>
@@ -178,7 +185,7 @@ Qed.</textarea>
       </tr>
       <tr>
         <td></td>
-        <td>
+        <td class="has-kbd">
           <kbd>Ctrl</kbd>+<img class="symbol-mouse" src="ui-images/pointer.svg">
         </td>
         <td>Hover executed statements to peek at the proof state after each step.</td>
@@ -186,7 +193,7 @@ Qed.</textarea>
     </table>
     <h5>Creating your own proof scripts</h5>
     <p>
-      The <a href="examples/scratchpad.html">scratchpad</a> offers simple, local
+      The <a href="scratchpad.html">scratchpad</a> offers simple, local
       storage functionality. It also allows you to share your development with
       other users in a manner that is similar to Pastebin.
     </p>
@@ -240,20 +247,28 @@ Qed.</textarea>
   </div> <!-- /#ide-wrapper -->
 
   <script type="text/javascript">
+    if (!localStorage['scratchpad.last_filename'])
+      setTimeout(() => document.body.classList.add('welcome'), 1500);
 
     var jscoq_ids  = ['.snippet'];
     var jscoq_opts = {
         implicit_libs: false,
         focus: false,
         editor: { mode: { 'company-coq': true } },
-        all_pkgs:  {'+': ['coq', 'mathcomp', 'equations', 'elpi', 'quickchick', 'lf', 'plf'],
+        all_pkgs:  {'+': ['coq', 'mathcomp', 'equations', 'elpi',
+                          'quickchick', 'software-foundations',
+                          'hahn', 'paco', 'snu-sflib',
+                          'fcsl-pcm', 'htt', 'pnp', 'stdpp', 'iris'],
                     './examples': ['examples']}
     };
 
     /* Global reference */
     var coq;
 
-    JsCoq.start(jscoq_ids, jscoq_opts).then(res => coq = res);
+    JsCoq.start(jscoq_ids, jscoq_opts).then(res => {
+      coq = res;
+      coq.loadSymbolsFrom('./examples/examples.symb.json');
+    });
   </script>
 </body>
 </html>

@@ -3,7 +3,7 @@ DIST_DIR = $(JSCOQ_DIR)/etc/docker/dist
 
 .PHONY: assemble js-assemble wa-assemble sfdev-assemble serve ci
 
-assmeble: js-assemble wa-assemble sfdev-assemble examples-assemble ci serve
+assmeble: | js-assemble wa-assemble sfdev-assemble examples-assemble ci
 
 js-assemble:
 	ci/assemble.js -cd $(DIST_DIR)
@@ -22,10 +22,13 @@ examples-assemble:
 
 SFDEV_DIR = $(HOME)/var/ext/sfdev
 
+sfdev-rebuild:
+	cd $(SFDEV_DIR) && DIST_DIR=$(PWD)/wa/dist V=0.15.1 $(PWD)/ext/sf/_ci
+
 sfdev-assemble:
 	cd ext/sf && ./haul-from.sh $(SFDEV_DIR)
 
-ci: js-assemble wa-assemble sfdev-assemble examples-assemble
+ci: | js-assemble wa-assemble examples-assemble sfdev-rebuild sfdev-assemble
 
 serve:
 	npx http-server
