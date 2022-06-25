@@ -1,0 +1,18 @@
+#!/bin/bash -e
+
+if [ -z "$V" ] ; then
+    echo 'error: missing version (`V=..`)'; exit 1
+fi
+D=${DIST_DIR:-$HOME/var/workspace/jscoq/etc/docker/dist}
+
+echo "$D"
+
+eval $(opam env --set-switch --switch wacoq)
+
+npm i $D/wacoq-bin-$V.tar.gz $D/wacoq-$V.tgz
+
+for vol in lf plf vfa slf ; do
+    make -C $vol clean
+    make -C $vol terse full TESTERS=no
+    make -C $vol jscoq TESTERS=no
+done
