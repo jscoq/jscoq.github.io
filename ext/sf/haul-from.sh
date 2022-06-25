@@ -27,7 +27,7 @@ for vol in $VOLUMES ; do
             rm -rf $vol/$cut
             mkdir -p $vol/$cut
             cp -R $fn/*.html $vol/$cut
-            (cd $vol/$cut && ln -s ../../common .)
+            (cd $vol/$cut && cp -r ../../common .)
         #else echo "✗ $fn"; ok=0
         fi
     done
