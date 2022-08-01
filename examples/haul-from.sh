@@ -15,7 +15,8 @@ else
     INPLACE="-i ''"
 fi
 
-# applies to `jscoq-loader` and `jscoq-agent`
+# need to adjust paths of jsCoq's helper scripts and stylesheets
+# (esp. `jscoq-loader.js`, `jscoq-agent.js`, `jscoqdoc.css`)
 for fn in *.html; do
-    sed $INPLACE 's@[^"]*/jscoq-@../node_modules/jscoq/ui-js/jscoq-@g' $fn
+    sed $INPLACE 's@[^"]*/ui-\(js\|css\)@../node_modules/jscoq/ui-\1@g' $fn
 done
