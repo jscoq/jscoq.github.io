@@ -1,17 +1,14 @@
 JSCOQ_DIR = $(PWD)/../jscoq
 DIST_DIR = $(JSCOQ_DIR)/etc/docker/dist
 
-.PHONY: assemble js-assemble wa-assemble sfdev-assemble serve ci
+.PHONY: assemble js-assemble wa-assemble sf-assemble serve ci
 
-assemble: | js-assemble wa-assemble sfdev-assemble examples-assemble ci
+assemble: | js-assemble wa-assemble sf-assemble examples-assemble
 
 js-assemble:
 	ci/assemble.js -cd $(DIST_DIR)
 
 wa-assemble:
-	# this is a wrinkle
-	# cp $(DIST_DIR)/wacoq-bin-*.tar.gz wa/dist
-	# cd wa && npm i ./dist/wacoq-bin-*.tar.gz &&
 	cd wa && ci/assemble.js -cd $(DIST_DIR)
 
 
@@ -22,13 +19,13 @@ examples-assemble:
 
 SFDEV_DIR = $(HOME)/var/ext/sfdev
 
-sfdev-rebuild:
+sf-rebuild:
 	cd $(SFDEV_DIR) && DIST_DIR=$(PWD)/wa/dist V=0.16.0 $(PWD)/ext/sf/_ci
 
-sfdev-assemble:
+sf-assemble:
 	cd ext/sf && ./haul-from.sh $(SFDEV_DIR)
 
-ci: | js-assemble wa-assemble examples-assemble sfdev-rebuild sfdev-assemble
+ci: | js-assemble wa-assemble examples-assemble sf-rebuild sf-assemble
 
 serve:
 	npx http-server
