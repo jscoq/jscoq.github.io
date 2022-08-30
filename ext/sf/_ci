@@ -14,5 +14,7 @@ npm i $D/wacoq-bin-$V.tar.gz $D/wacoq-$V.tgz
 for vol in lf plf vfa slf ; do
     make -C $vol clean
     make -C $vol terse full TESTERS=no
-    make -C $vol jscoq TESTERS=no
+    # need to do this sequentially for some reason?
+    make -C $vol jscoq
+    make -C $vol jscoq-terse
 done
