@@ -3,3 +3,7 @@
 examples.*
 _build
 .lia.cache
+
+# also copied from jscoq
+conv.gif
+dft.css

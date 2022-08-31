@@ -15,8 +15,8 @@ else
     INPLACE="-i ''"
 fi
 
-# need to adjust paths of jsCoq's helper scripts and stylesheets
-# (esp. `jscoq-loader.js`, `jscoq-agent.js`, `jscoqdoc.css`)
+# need to adjust paths of jsCoq's entry point (`jscoq.js`).
+# assumes each file has only one `import` statement.
 for fn in *.html; do
-    sed $INPLACE 's@[^"]*/ui-\(js\|css\)@../node_modules/jscoq/ui-\1@g' $fn
+    sed $INPLACE "s@from '[^']*.js'@from '../node_modules/jscoq/jscoq.js'@" $fn
 done
