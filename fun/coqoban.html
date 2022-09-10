@@ -125,9 +125,9 @@ unfold microban_1.
       }
       coq.pprint = new CoqobanPprint();
     })();
-  </script>
 
-  <script>
+    /** Game mechanics **/
+
     function go(cmd) {
       var cm = coq.provider.currentFocus.editor;
       cm.replaceRange(` ${cmd}.`, cm.getCursor(), null, 'coqoban');
