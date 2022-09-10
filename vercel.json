@@ -17,6 +17,15 @@
           "value": "max-age=3600, public"
         }
       ]
+    },
+    {
+      "source": "/(.*).cjs",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/javascript"
+        }
+      ]
     }
   ]
 }
