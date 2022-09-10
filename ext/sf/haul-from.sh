@@ -16,7 +16,9 @@ fi
 
 ok=1
 
-for subdir in common _built/coq-pkgs ; do
+# note: not copying `_build/coq-pkgs`, instead `@wacoq/software-foundations`
+# from npm is going to be used
+for subdir in common ; do
     fn=$D/$subdir
     if [ -d $fn ] ; then echo "✓ $fn";
         rm -rf $subdir
@@ -27,6 +29,7 @@ done
 # touchup paths (files in common/ need to be processed before the volumes)
 sed $INPLACE 's/(.*\/\(node_modules\/.*jscoq-splash.png\))/(\/wa\/\1)/' common/css/jscoq.css
 sed $INPLACE "s/'.*\/\(node_modules\/.*jscoq.js\)'/'\/wa\/\1'/" common/jscoq.js 
+sed $INPLACE "s/\(all_pkgs:\).*/\1 ['coq', 'software-foundations'],/" common/jscoq.js
 
 fn=$D/tools
 if [ -d $fn ] ; then echo "✓ $fn";
