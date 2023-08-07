@@ -6,7 +6,7 @@ rm -rf public  # need to clean up older build?
 
 npm i
 mkdir public
-mv *.html ui-* ci node_modules public/
+mv *.html frontend ci node_modules public/
 
 # Build in `wa/` if available
 if [ -e wa ]; then ( cd wa; npm run vercel-build ); fi
