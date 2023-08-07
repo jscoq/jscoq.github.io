@@ -10,13 +10,14 @@ is_gnu_sed() {
 }
 
 if is_gnu_sed; then
-    INPLACE="-i"
+    INPLACE=(-i)
 else
-    INPLACE="-i ''"
+    INPLACE=(-i "")
 fi
 
 # need to adjust paths of jsCoq's entry point (`jscoq.js`).
 # assumes each file has only one `import` statement.
 for fn in *.html; do
-    sed $INPLACE "s@from '[^']*.js'@from '../node_modules/jscoq/jscoq.js'@" $fn
+    sed "${INPLACE[@]}" "s@from '[^']*.js'@from '../node_modules/jscoq/jscoq.js'@" $fn
+    sed "${INPLACE[@]}" 's@"[^"]*frontend/index.css"@"../node_modules/jscoq/dist/frontend/index.css"@' $fn
 done
