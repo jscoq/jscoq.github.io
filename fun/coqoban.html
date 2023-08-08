@@ -4,6 +4,8 @@
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <title>Çoqoban</title>
 
+    <link rel="stylesheet" type="text/css" href="../node_modules/jscoq/dist/frontend/index.css">
+
     <style>
     .constr\.notation[data-name]:not([data-name=""]) {
         display: inline-block;
@@ -102,7 +104,8 @@ unfold microban_1.
         implicit_libs: true,
         editor:        { mode: { 'company-coq': true }, keyMap: 'default' },
         init_pkgs:     ['init'],
-        all_pkgs:      ['coq', 'coqoban']
+        all_pkgs:      ['coq', 'coqoban'],
+        node_modules_path: "../node_modules/"
     };
 
     var coq;
