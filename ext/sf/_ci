@@ -7,14 +7,16 @@ D=${DIST_DIR:-$HOME/var/workspace/jscoq/etc/docker/dist}
 
 echo "$D"
 
-eval $(opam env --set-switch --switch wacoq)
+eval $(opam env --set-switch --switch jscoq+64bit)
 
-npm i $D/wacoq-bin-$V.tar.gz $D/wacoq-$V.tgz
+# npm i $D/wacoq-bin-$V.tar.gz $D/wacoq-$V.tgz
+npm i $D/jscoq-$V.tgz
 
 for vol in lf plf vfa slf ; do
     make -C $vol clean
     make -C $vol terse full TESTERS=no
-    # need to do this sequentially for some reason?
+    # need to do this sequentially because `jscoq sdk`
+    # is not re-entrant. ouch.
     make -C $vol jscoq
     make -C $vol jscoq-terse
 done

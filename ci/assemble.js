@@ -88,10 +88,7 @@ function assemble(opts) {
 
     /** hack to filter out the non-npm jsCoq tarball */
     function _pickAndChoose(tarballs) {
-        return tarballs.filter(u => {
-            var qual = u.replace('.t', '-npm.t');
-            return qual == u || !tarballs.includes(qual);
-        });
+        return tarballs.filter(u => !u.endsWith('-dist.tgz'));
     }
         
     /* main entry point */

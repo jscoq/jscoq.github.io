@@ -27,9 +27,10 @@ for subdir in common ; do
 done
 
 # touchup paths (files in common/ need to be processed before the volumes)
-sed $INPLACE 's/(.*\/\(node_modules\/.*jscoq-splash.png\))/(\/wa\/\1)/' common/css/jscoq.css
-sed $INPLACE "s/'.*\/\(node_modules\/.*jscoq.js\)'/'\/wa\/\1'/" common/jscoq.js 
-sed $INPLACE "s/\(all_pkgs:\).*/\1 ['coq', 'software-foundations'],/" common/jscoq.js
+sed $INPLACE 's@(.*/\(node_modules/.*jscoq-splash.png\))@(/\1)@' common/css/jscoq.css
+sed $INPLACE "s@'.*/\(node_modules/.*index.css\)'@'/\1'@" common/css/jscoq.css
+sed $INPLACE "s@'.*/\(node_modules/.*jscoq.js\)'@'/\1'@" common/jscoq.js 
+sed $INPLACE "s@\(all_pkgs:\).*@\1 ['coq', 'software-foundations'], node_modules_path: '/node_modules/',@" common/jscoq.js
 
 fn=$D/tools
 if [ -d $fn ] ; then echo "✓ $fn";
